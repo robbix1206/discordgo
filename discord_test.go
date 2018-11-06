@@ -9,8 +9,6 @@ import (
 	"time"
 )
 
-//////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////// VARS NEEDED FOR TESTING
 var (
 	dg    *Session // Stores a global discordgo user session
 	dgBot *Session // Stores a global discordgo bot session
@@ -25,40 +23,23 @@ var (
 func init() {
 	fmt.Println("Init is being called.")
 	if envBotToken != "" {
-		if d, err := New(envBotToken); err == nil {
-			dgBot = d
-		}
+		dgBot = New(envBotToken)
 	}
 
-	if d, err := New(envToken); err == nil {
-		dg = d
-	} else {
-		fmt.Println("dg is nil, error", err)
-	}
+	dg = New(envToken)
 }
-
-//////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////// START OF TESTS
 
 // TestNew tests the New() function without any arguments.  This should return
 // a valid Session{} struct and no errors.
 func TestNew(t *testing.T) {
-
-	_, err := New()
-	if err != nil {
-		t.Errorf("New() returned error: %+v", err)
-	}
+	New("")
 }
 
 // TestInvalidToken tests the New() function with an invalid token
 func TestInvalidToken(t *testing.T) {
-	d, err := New("asjkldhflkjasdh")
-	if err != nil {
-		t.Fatalf("New(InvalidToken) returned error: %+v", err)
-	}
-
+	d := New("asjkldhflkjasdh")
 	// New with just a token does not do any communication, so attempt an api call.
-	_, err = d.UserSettings()
+	_, err := d.UserSettings()
 	if err == nil {
 		t.Errorf("New(InvalidToken), d.UserSettings returned nil error.")
 	}
@@ -71,11 +52,7 @@ func TestNewToken(t *testing.T) {
 		t.Skip("Skipping New(token), DGU_TOKEN not set")
 	}
 
-	d, err := New(envToken)
-	if err != nil {
-		t.Fatalf("New(envToken) returned error: %+v", err)
-	}
-
+	d := New(envToken)
 	if d == nil {
 		t.Fatal("New(envToken), d is nil, should be Session{}")
 	}
@@ -90,12 +67,10 @@ func TestOpenClose(t *testing.T) {
 		t.Skip("Skipping TestClose, DGU_TOKEN not set")
 	}
 
-	d, err := New(envToken)
-	if err != nil {
-		t.Fatalf("TestClose, New(envToken) returned error: %+v", err)
-	}
+	d := New(envToken)
 
-	if err = d.Open(); err != nil {
+	err := d.Open()
+	if err != nil {
 		t.Fatalf("TestClose, d.Open failed: %+v", err)
 	}
 
@@ -125,11 +100,13 @@ func TestOpenClose(t *testing.T) {
 	// UpdateStatus - maybe we move this into wsapi_test.go but the websocket
 	// created here is needed.  This helps tests that the websocket was setup
 	// and it is working.
-	if err = d.UpdateStatus(0, time.Now().String()); err != nil {
+	err = d.UpdateStatus(0, time.Now().String())
+	if err != nil {
 		t.Errorf("UpdateStatus error: %+v", err)
 	}
 
-	if err = d.Close(); err != nil {
+	err = d.Close()
+	if err != nil {
 		t.Fatalf("TestClose, d.Close failed: %+v", err)
 	}
 }
