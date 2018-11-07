@@ -23,6 +23,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/robbix1206/discordgo/logging"
+	"github.com/robbix1206/discordgo/structures"
 )
 
 // ErrWSAlreadyOpen is thrown when you attempt to open
@@ -48,8 +50,8 @@ type resumePacket struct {
 
 // Open creates a websocket connection to Discord.
 // See: https://discordapp.com/developers/docs/topics/gateway#connecting
-func (s *WSSession) Open() (err error) {
-	s.log(LogInformational, "called")
+func (s *Session) Open() (err error) {
+	s.log(logging.LogInformational, "called")
 
 	// Prevent Open or other major Session functions from
 	// being called while Open is still running.
@@ -69,16 +71,16 @@ func (s *WSSession) Open() (err error) {
 		}
 
 		// Add the version and encoding to the URL
-		s.gateway = s.gateway + "?v=" + APIVersion + "&encoding=json"
+		s.gateway = s.gateway + "?v=" + structures.APIVersion + "&encoding=json"
 	}
 
 	// Connect to the Gateway
-	s.log(LogInformational, "connecting to gateway %s", s.gateway)
+	s.log(logging.LogInformational, "connecting to gateway %s", s.gateway)
 	header := http.Header{}
 	header.Add("accept-encoding", "zlib")
 	s.wsConn, _, err = websocket.DefaultDialer.Dial(s.gateway, header)
 	if err != nil {
-		s.log(LogWarning, "error connecting to gateway %s, %s", s.gateway, err)
+		s.log(logging.LogWarning, "error connecting to gateway %s, %s", s.gateway, err)
 		s.gateway = "" // clear cached gateway
 		s.wsConn = nil // Just to be safe.
 		return err
@@ -112,7 +114,7 @@ func (s *WSSession) Open() (err error) {
 		err = fmt.Errorf("expecting Op 10, got Op %d instead", e.Operation)
 		return err
 	}
-	s.log(LogInformational, "Op 10 Hello Packet received from Discord")
+	s.log(logging.LogInformational, "Op 10 Hello Packet received from Discord")
 	s.LastHeartbeatAck = time.Now().UTC()
 	var h helloOp
 	if err = json.Unmarshal(e.RawData, &h); err != nil {
@@ -141,7 +143,7 @@ func (s *WSSession) Open() (err error) {
 		p.Data.SessionID = s.sessionID
 		p.Data.Sequence = sequence
 
-		s.log(LogInformational, "sending resume packet to gateway")
+		s.log(logging.LogInformational, "sending resume packet to gateway")
 		s.wsMutex.Lock()
 		err = s.wsConn.WriteJSON(p)
 		s.wsMutex.Unlock()
@@ -150,20 +152,6 @@ func (s *WSSession) Open() (err error) {
 			return err
 		}
 
-	}
-
-	// A basic state is a hard requirement for Voice.
-	// We create it here so the below READY/RESUMED packet can populate
-	// the state :)
-	// XXX: Move to New() func?
-	if s.State == nil {
-		state := NewState()
-		state.TrackChannels = false
-		state.TrackEmojis = false
-		state.TrackMembers = false
-		state.TrackRoles = false
-		state.TrackVoice = false
-		s.State = state
 	}
 
 	// Now Discord should send us a READY or RESUMED packet.
@@ -177,17 +165,17 @@ func (s *WSSession) Open() (err error) {
 	}
 	if e.Type != `READY` && e.Type != `RESUMED` {
 		// This is not fatal, but it does not follow their API documentation.
-		s.log(LogWarning, "Expected READY/RESUMED, instead got:\n%#v\n", e)
+		s.log(logging.LogWarning, "Expected READY/RESUMED, instead got:\n%#v\n", e)
 	}
-	s.log(LogInformational, "First Packet:\n%#v\n", e)
+	s.log(logging.LogInformational, "First Packet:\n%#v\n", e)
 
-	s.log(LogInformational, "We are now connected to Discord, emitting connect event")
+	s.log(logging.LogInformational, "We are now connected to Discord, emitting connect event")
 	s.handleEvent(connectEventType, &Connect{})
 
 	// A VoiceConnections map is a hard requirement for Voice.
 	// XXX: can this be moved to when opening a voice connection?
 	if s.VoiceConnections == nil {
-		s.log(LogInformational, "creating new VoiceConnections map")
+		s.log(logging.LogInformational, "creating new VoiceConnections map")
 		s.VoiceConnections = make(map[string]*VoiceConnection)
 	}
 
@@ -200,7 +188,7 @@ func (s *WSSession) Open() (err error) {
 	go s.heartbeat(s.wsConn, s.listening, h.HeartbeatInterval)
 	go s.listen(s.wsConn, s.listening)
 
-	s.log(LogInformational, "exiting")
+	s.log(logging.LogInformational, "exiting")
 	return nil
 }
 
@@ -208,7 +196,7 @@ func (s *WSSession) Open() (err error) {
 // listening channel is closed, or an error occurs.
 func (s *Session) listen(wsConn *websocket.Conn, listening <-chan interface{}) {
 
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 
 	for {
 
@@ -225,15 +213,15 @@ func (s *Session) listen(wsConn *websocket.Conn, listening <-chan interface{}) {
 
 			if sameConnection {
 
-				s.log(LogWarning, "error reading from gateway %s websocket, %s", s.gateway, err)
+				s.log(logging.LogWarning, "error reading from gateway %s websocket, %s", s.gateway, err)
 				// There has been an error reading, close the websocket so that
 				// OnDisconnect event is emitted.
 				err := s.Close()
 				if err != nil {
-					s.log(LogWarning, "error closing session connection, %s", err)
+					s.log(logging.LogWarning, "error closing session connection, %s", err)
 				}
 
-				s.log(LogInformational, "calling reconnect() now")
+				s.log(logging.LogInformational, "calling reconnect() now")
 				s.reconnect()
 			}
 
@@ -277,7 +265,7 @@ func (s *Session) HeartbeatLatency() time.Duration {
 // disconnect the websocket connection after a few seconds.
 func (s *Session) heartbeat(wsConn *websocket.Conn, listening <-chan interface{}, heartbeatIntervalMsec time.Duration) {
 
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 
 	if listening == nil || wsConn == nil {
 		return
@@ -292,16 +280,16 @@ func (s *Session) heartbeat(wsConn *websocket.Conn, listening <-chan interface{}
 		last := s.LastHeartbeatAck
 		s.RUnlock()
 		sequence := atomic.LoadInt64(s.sequence)
-		s.log(LogDebug, "sending gateway websocket heartbeat seq %d", sequence)
+		s.log(logging.LogDebug, "sending gateway websocket heartbeat seq %d", sequence)
 		s.wsMutex.Lock()
 		s.LastHeartbeatSent = time.Now().UTC()
 		err = wsConn.WriteJSON(heartbeatOp{1, sequence})
 		s.wsMutex.Unlock()
 		if err != nil || time.Now().UTC().Sub(last) > (heartbeatIntervalMsec*FailedHeartbeatAcks) {
 			if err != nil {
-				s.log(LogError, "error sending heartbeat to gateway %s, %s", s.gateway, err)
+				s.log(logging.LogError, "error sending heartbeat to gateway %s, %s", s.gateway, err)
 			} else {
-				s.log(LogError, "haven't gotten a heartbeat ACK in %v, triggering a reconnection", time.Now().UTC().Sub(last))
+				s.log(logging.LogError, "haven't gotten a heartbeat ACK in %v, triggering a reconnection", time.Now().UTC().Sub(last))
 			}
 			s.Close()
 			s.reconnect()
@@ -322,10 +310,10 @@ func (s *Session) heartbeat(wsConn *websocket.Conn, listening <-chan interface{}
 
 // UpdateStatusData ia provided to UpdateStatusComplex()
 type UpdateStatusData struct {
-	IdleSince *int   `json:"since"`
-	Game      *Game  `json:"game"`
-	AFK       bool   `json:"afk"`
-	Status    string `json:"status"`
+	IdleSince *int      `json:"since"`
+	Game      *Activity `json:"game"`
+	AFK       bool      `json:"afk"`
+	Status    string    `json:"status"`
 }
 
 type updateStatusOp struct {
@@ -333,7 +321,7 @@ type updateStatusOp struct {
 	Data UpdateStatusData `json:"d"`
 }
 
-func newUpdateStatusData(idle int, gameType GameType, game, url string) *UpdateStatusData {
+func newUpdateStatusData(idle int, gameType ActivityType, game, url string) *UpdateStatusData {
 	usd := &UpdateStatusData{
 		Status: "online",
 	}
@@ -343,7 +331,7 @@ func newUpdateStatusData(idle int, gameType GameType, game, url string) *UpdateS
 	}
 
 	if game != "" {
-		usd.Game = &Game{
+		usd.Game = &Activity{
 			Name: game,
 			Type: gameType,
 			URL:  url,
@@ -358,7 +346,7 @@ func newUpdateStatusData(idle int, gameType GameType, game, url string) *UpdateS
 // If game!="" then set game.
 // if otherwise, set status to active, and no game.
 func (s *Session) UpdateStatus(idle int, game string) (err error) {
-	return s.UpdateStatusComplex(*newUpdateStatusData(idle, GameTypeGame, game, ""))
+	return s.UpdateStatusComplex(*newUpdateStatusData(idle, ActivityTypeGame, game, ""))
 }
 
 // UpdateStreamingStatus is used to update the user's streaming status.
@@ -367,9 +355,9 @@ func (s *Session) UpdateStatus(idle int, game string) (err error) {
 // If game!="" and url!="" then set the status type to streaming with the URL set.
 // if otherwise, set status to active, and no game.
 func (s *Session) UpdateStreamingStatus(idle int, game string, url string) (err error) {
-	gameType := GameTypeGame
+	gameType := ActivityTypeGame
 	if url != "" {
-		gameType = GameTypeStreaming
+		gameType = ActivityTypeStreaming
 	}
 	return s.UpdateStatusComplex(*newUpdateStatusData(idle, gameType, game, url))
 }
@@ -378,7 +366,7 @@ func (s *Session) UpdateStreamingStatus(idle int, game string, url string) (err 
 // If game!="" then set to what user is listening to
 // Else, set user to active and no game.
 func (s *Session) UpdateListeningStatus(game string) (err error) {
-	return s.UpdateStatusComplex(*newUpdateStatusData(0, GameTypeListening, game, ""))
+	return s.UpdateStatusComplex(*newUpdateStatusData(0, ActivityTypeListening, game, ""))
 }
 
 // UpdateStatusComplex allows for sending the raw status update data untouched by discordgo.
@@ -414,7 +402,7 @@ type requestGuildMembersOp struct {
 // query    : String that username starts with, leave empty to return all members
 // limit    : Max number of items to return, or 0 to request all members matched
 func (s *Session) RequestGuildMembers(guildID, query string, limit int) (err error) {
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 
 	s.RLock()
 	defer s.RUnlock()
@@ -454,14 +442,14 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 
 		z, err2 := zlib.NewReader(reader)
 		if err2 != nil {
-			s.log(LogError, "error uncompressing websocket message, %s", err)
+			s.log(logging.LogError, "error uncompressing websocket message, %s", err)
 			return nil, err2
 		}
 
 		defer func() {
 			err3 := z.Close()
 			if err3 != nil {
-				s.log(LogWarning, "error closing zlib, %s", err)
+				s.log(logging.LogWarning, "error closing zlib, %s", err)
 			}
 		}()
 
@@ -472,21 +460,21 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 	var e *Event
 	decoder := json.NewDecoder(reader)
 	if err = decoder.Decode(&e); err != nil {
-		s.log(LogError, "error decoding websocket message, %s", err)
+		s.log(logging.LogError, "error decoding websocket message, %s", err)
 		return e, err
 	}
 
-	s.log(LogDebug, "Op: %d, Seq: %d, Type: %s, Data: %s\n\n", e.Operation, e.Sequence, e.Type, string(e.RawData))
+	s.log(logging.LogDebug, "Op: %d, Seq: %d, Type: %s, Data: %s\n\n", e.Operation, e.Sequence, e.Type, string(e.RawData))
 
 	// Ping request.
 	// Must respond with a heartbeat packet within 5 seconds
 	if e.Operation == 1 {
-		s.log(LogInformational, "sending heartbeat in response to Op1")
+		s.log(logging.LogInformational, "sending heartbeat in response to Op1")
 		s.wsMutex.Lock()
 		err = s.wsConn.WriteJSON(heartbeatOp{1, atomic.LoadInt64(s.sequence)})
 		s.wsMutex.Unlock()
 		if err != nil {
-			s.log(LogError, "error sending heartbeat in response to Op1")
+			s.log(logging.LogError, "error sending heartbeat in response to Op1")
 			return e, err
 		}
 
@@ -496,7 +484,7 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 	// Reconnect
 	// Must immediately disconnect from gateway and reconnect to new gateway.
 	if e.Operation == 7 {
-		s.log(LogInformational, "Closing and reconnecting in response to Op7")
+		s.log(logging.LogInformational, "Closing and reconnecting in response to Op7")
 		s.Close()
 		s.reconnect()
 		return e, nil
@@ -506,11 +494,11 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 	// Must respond with a Identify packet.
 	if e.Operation == 9 {
 
-		s.log(LogInformational, "sending identify packet to gateway in response to Op9")
+		s.log(logging.LogInformational, "sending identify packet to gateway in response to Op9")
 
 		err = s.identify()
 		if err != nil {
-			s.log(LogWarning, "error sending gateway identify packet, %s, %s", s.gateway, err)
+			s.log(logging.LogWarning, "error sending gateway identify packet, %s, %s", s.gateway, err)
 			return e, err
 		}
 
@@ -526,7 +514,7 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 		s.Lock()
 		s.LastHeartbeatAck = time.Now().UTC()
 		s.Unlock()
-		s.log(LogDebug, "got heartbeat ACK")
+		s.log(logging.LogDebug, "got heartbeat ACK")
 		return e, nil
 	}
 
@@ -534,7 +522,7 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 	if e.Operation != 0 {
 		// But we probably should be doing something with them.
 		// TEMP
-		s.log(LogWarning, "unknown Op: %d, Seq: %d, Type: %s, Data: %s, message: %s", e.Operation, e.Sequence, e.Type, string(e.RawData), string(message))
+		s.log(logging.LogWarning, "unknown Op: %d, Seq: %d, Type: %s, Data: %s, message: %s", e.Operation, e.Sequence, e.Type, string(e.RawData), string(message))
 		return e, nil
 	}
 
@@ -547,7 +535,7 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 
 		// Attempt to unmarshal our event.
 		if err = json.Unmarshal(e.RawData, e.Struct); err != nil {
-			s.log(LogError, "error unmarshalling %s event, %s", e.Type, err)
+			s.log(logging.LogError, "error unmarshalling %s event, %s", e.Type, err)
 		}
 
 		// Send event to any registered event handlers for it's type.
@@ -559,7 +547,7 @@ func (s *Session) onEvent(messageType int, message []byte) (*Event, error) {
 		// Either way, READY events must fire, even with errors.
 		s.handleEvent(e.Type, e.Struct)
 	} else {
-		s.log(LogWarning, "unknown event: Op: %d, Seq: %d, Type: %s, Data: %s", e.Operation, e.Sequence, e.Type, string(e.RawData))
+		s.log(logging.LogWarning, "unknown event: Op: %d, Seq: %d, Type: %s, Data: %s", e.Operation, e.Sequence, e.Type, string(e.RawData))
 	}
 
 	// For legacy reasons, we send the raw event also, this could be useful for handling unknown events.
@@ -592,7 +580,7 @@ type voiceChannelJoinOp struct {
 //    deaf    : If true, you will be set to deafened upon joining.
 func (s *Session) ChannelVoiceJoin(gID, cID string, mute, deaf bool) (voice *VoiceConnection, err error) {
 
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 
 	s.RLock()
 	voice, _ = s.VoiceConnections[gID]
@@ -625,7 +613,7 @@ func (s *Session) ChannelVoiceJoin(gID, cID string, mute, deaf bool) (voice *Voi
 	// doesn't exactly work perfect yet.. TODO
 	err = voice.waitUntilConnected()
 	if err != nil {
-		s.log(LogWarning, "error waiting for voice to connect, %s", err)
+		s.log(logging.LogWarning, "error waiting for voice to connect, %s", err)
 		voice.Close()
 		return
 	}
@@ -643,7 +631,7 @@ func (s *Session) ChannelVoiceJoin(gID, cID string, mute, deaf bool) (voice *Voi
 //    deaf    : If true, you will be set to deafened upon joining.
 func (s *Session) ChannelVoiceJoinManual(gID, cID string, mute, deaf bool) (err error) {
 
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 
 	// Send the request to Discord that we want to join the voice channel
 	data := voiceChannelJoinOp{4, voiceChannelJoinData{&gID, &cID, mute, deaf}}
@@ -674,7 +662,7 @@ func (s *Session) onVoiceStateUpdate(st *VoiceStateUpdate) {
 	}
 
 	// We only care about events that are about us.
-	if s.State.User.ID != st.UserID {
+	if s.userID != st.UserID {
 		return
 	}
 
@@ -693,7 +681,7 @@ func (s *Session) onVoiceStateUpdate(st *VoiceStateUpdate) {
 // the new region endpoint.
 func (s *Session) onVoiceServerUpdate(st *VoiceServerUpdate) {
 
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 
 	s.RLock()
 	voice, exists := s.VoiceConnections[st.GuildID]
@@ -718,7 +706,7 @@ func (s *Session) onVoiceServerUpdate(st *VoiceServerUpdate) {
 	// Open a connection to the voice server
 	err := voice.open()
 	if err != nil {
-		s.log(LogError, "onVoiceServerUpdate voice.open, %s", err)
+		s.log(logging.LogError, "onVoiceServerUpdate voice.open, %s", err)
 	}
 }
 
@@ -780,7 +768,7 @@ func (s *Session) identify() error {
 
 func (s *Session) reconnect() {
 
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 
 	var err error
 
@@ -789,11 +777,11 @@ func (s *Session) reconnect() {
 		wait := time.Duration(1)
 
 		for {
-			s.log(LogInformational, "trying to reconnect to gateway")
+			s.log(logging.LogInformational, "trying to reconnect to gateway")
 
 			err = s.Open()
 			if err == nil {
-				s.log(LogInformational, "successfully reconnected to gateway")
+				s.log(logging.LogInformational, "successfully reconnected to gateway")
 
 				// I'm not sure if this is actually needed.
 				// if the gw reconnect works properly, voice should stay alive
@@ -804,7 +792,7 @@ func (s *Session) reconnect() {
 				defer s.RUnlock()
 				for _, v := range s.VoiceConnections {
 
-					s.log(LogInformational, "reconnecting voice connection to guild %s", v.GuildID)
+					s.log(logging.LogInformational, "reconnecting voice connection to guild %s", v.GuildID)
 					go v.reconnect()
 
 					// This is here just to prevent violently spamming the
@@ -818,11 +806,11 @@ func (s *Session) reconnect() {
 			// Certain race conditions can call reconnect() twice. If this happens, we
 			// just break out of the reconnect loop
 			if err == ErrWSAlreadyOpen {
-				s.log(LogInformational, "Websocket already exists, no need to reconnect")
+				s.log(logging.LogInformational, "Websocket already exists, no need to reconnect")
 				return
 			}
 
-			s.log(LogError, "error reconnecting to gateway, %s", err)
+			s.log(logging.LogError, "error reconnecting to gateway, %s", err)
 
 			<-time.After(wait * time.Second)
 			wait *= 2
@@ -837,13 +825,13 @@ func (s *Session) reconnect() {
 // TODO: Add support for Voice WS/UDP connections
 func (s *Session) Close() (err error) {
 
-	s.log(LogInformational, "called")
+	s.log(logging.LogInformational, "called")
 	s.Lock()
 
 	s.DataReady = false
 
 	if s.listening != nil {
-		s.log(LogInformational, "closing listening channel")
+		s.log(logging.LogInformational, "closing listening channel")
 		close(s.listening)
 		s.listening = nil
 	}
@@ -853,23 +841,23 @@ func (s *Session) Close() (err error) {
 
 	if s.wsConn != nil {
 
-		s.log(LogInformational, "sending close frame")
+		s.log(logging.LogInformational, "sending close frame")
 		// To cleanly close a connection, a client should send a close
 		// frame and wait for the server to close the connection.
 		s.wsMutex.Lock()
 		err := s.wsConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 		s.wsMutex.Unlock()
 		if err != nil {
-			s.log(LogInformational, "error closing websocket, %s", err)
+			s.log(logging.LogInformational, "error closing websocket, %s", err)
 		}
 
 		// TODO: Wait for Discord to actually close the connection.
 		time.Sleep(1 * time.Second)
 
-		s.log(LogInformational, "closing gateway websocket")
+		s.log(logging.LogInformational, "closing gateway websocket")
 		err = s.wsConn.Close()
 		if err != nil {
-			s.log(LogInformational, "error closing websocket, %s", err)
+			s.log(logging.LogInformational, "error closing websocket, %s", err)
 		}
 
 		s.wsConn = nil
@@ -877,7 +865,7 @@ func (s *Session) Close() (err error) {
 
 	s.Unlock()
 
-	s.log(LogInformational, "emit disconnect event")
+	s.log(logging.LogInformational, "emit disconnect event")
 	s.handleEvent(disconnectEventType, &Disconnect{})
 
 	return

@@ -11,10 +11,11 @@
 
 package http
 
-import "strconv"
+import (
+	"strconv"
 
-// APIVersion is the Discord API version used for the REST and Websocket API.
-var APIVersion = "6"
+	"github.com/robbix1206/discordgo/structures"
+)
 
 // Known Discord API Endpoints.
 var (
@@ -24,7 +25,7 @@ var (
 	EndpointSmUpcoming = EndpointSm + "upcoming.json"
 
 	EndpointDiscord    = "https://discordapp.com/"
-	EndpointAPI        = EndpointDiscord + "api/v" + APIVersion + "/"
+	EndpointAPI        = EndpointDiscord + "api/v" + structures.APIVersion + "/"
 	EndpointGuilds     = EndpointAPI + "guilds/"
 	EndpointChannels   = EndpointAPI + "channels/"
 	EndpointUsers      = EndpointAPI + "users/"

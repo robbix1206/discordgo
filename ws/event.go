@@ -1,5 +1,9 @@
 package ws
 
+import "github.com/robbix1206/discordgo/logging"
+
+//go:generate go run ./tools/cmd/eventhandlers  ../structures/events.go
+
 // EventHandler is an interface for Discord events.
 type EventHandler interface {
 	// Type returns the type of event this handler belongs to.
@@ -121,7 +125,7 @@ func (s *Session) AddHandler(handler interface{}) func() {
 	eh := handlerForInterface(handler)
 
 	if eh == nil {
-		s.log(LogError, "Invalid handler type, handler will never be called")
+		s.log(logging.LogError, "Invalid handler type, handler will never be called")
 		return func() {}
 	}
 
@@ -135,7 +139,7 @@ func (s *Session) AddHandlerOnce(handler interface{}) func() {
 	eh := handlerForInterface(handler)
 
 	if eh == nil {
-		s.log(LogError, "Invalid handler type, handler will never be called")
+		s.log(logging.LogError, "Invalid handler type, handler will never be called")
 		return func() {}
 	}
 
@@ -206,10 +210,12 @@ func setGuildIds(g *Guild) {
 	for _, c := range g.Channels {
 		c.GuildID = g.ID
 	}
-
-	for _, m := range g.Members {
-		m.GuildID = g.ID
-	}
+	// FIXME: Should not be useful
+	/*
+		for _, m := range g.Members {
+			m.GuildID = g.ID
+		}
+	*/
 
 	for _, vs := range g.VoiceStates {
 		vs.GuildID = g.ID
@@ -233,10 +239,13 @@ func (s *Session) onInterface(i interface{}) {
 	case *VoiceStateUpdate:
 		go s.onVoiceStateUpdate(t)
 	}
-	err := s.State.OnInterface(s, i)
-	if err != nil {
-		s.log(LogDebug, "error dispatching internal event, %s", err)
-	}
+	//FIXME: Permit to get all this events
+	/*
+		err := s.State.OnInterface(s, i)
+		if err != nil {
+			s.log(logging.LogDebug, "error dispatching internal event, %s", err)
+		}
+	*/
 }
 
 // onReady handles the ready event.
@@ -244,4 +253,5 @@ func (s *Session) onReady(r *Ready) {
 
 	// Store the SessionID within the Session struct.
 	s.sessionID = r.SessionID
+	s.userID = r.User.ID
 }

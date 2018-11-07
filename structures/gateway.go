@@ -1,15 +1,5 @@
 package structures
 
-// A PresenceUpdate stores the online, offline, or idle and game status of Guild members.
-type PresenceUpdate struct {
-	User       *User     `json:"user"`
-	Roles      []string  `json:"roles"`
-	Game       *Activity `json:"game"`
-	GuildID    string    `json:"guild_id"`
-	Status     Status    `json:"status"`
-	Activities *Activity `json:"activities"`
-}
-
 // Status type definition
 type Status string
 

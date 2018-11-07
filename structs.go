@@ -17,4 +17,5 @@ import (
 
 type Session struct {
 	HTTPSession *http.Session
+	State       State
 }

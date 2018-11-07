@@ -28,7 +28,7 @@ const VERSION = "alpha"
 func New(token string) (s *Session) {
 	// Create a Session interface.
 	return &Session{
-		//State:       NewState(),
+		State:       NewState(),
 		HTTPSession: http.New(token),
 	}
 }

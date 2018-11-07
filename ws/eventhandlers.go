@@ -37,16 +37,9 @@ const (
 	messageReactionRemoveAllEventType = "MESSAGE_REACTION_REMOVE_ALL"
 	messageUpdateEventType            = "MESSAGE_UPDATE"
 	presenceUpdateEventType           = "PRESENCE_UPDATE"
-	presencesReplaceEventType         = "PRESENCES_REPLACE"
-	rateLimitEventType                = "__RATE_LIMIT__"
 	readyEventType                    = "READY"
-	relationshipAddEventType          = "RELATIONSHIP_ADD"
-	relationshipRemoveEventType       = "RELATIONSHIP_REMOVE"
 	resumedEventType                  = "RESUMED"
 	typingStartEventType              = "TYPING_START"
-	userGuildSettingsUpdateEventType  = "USER_GUILD_SETTINGS_UPDATE"
-	userNoteUpdateEventType           = "USER_NOTE_UPDATE"
-	userSettingsUpdateEventType       = "USER_SETTINGS_UPDATE"
 	userUpdateEventType               = "USER_UPDATE"
 	voiceServerUpdateEventType        = "VOICE_SERVER_UPDATE"
 	voiceStateUpdateEventType         = "VOICE_STATE_UPDATE"
@@ -638,41 +631,6 @@ func (eh presenceUpdateEventHandler) Handle(s *Session, i interface{}) {
 	}
 }
 
-// presencesReplaceEventHandler is an event handler for PresencesReplace events.
-type presencesReplaceEventHandler func(*Session, *PresencesReplace)
-
-// Type returns the event type for PresencesReplace events.
-func (eh presencesReplaceEventHandler) Type() string {
-	return presencesReplaceEventType
-}
-
-// New returns a new instance of PresencesReplace.
-func (eh presencesReplaceEventHandler) New() interface{} {
-	return &PresencesReplace{}
-}
-
-// Handle is the handler for PresencesReplace events.
-func (eh presencesReplaceEventHandler) Handle(s *Session, i interface{}) {
-	if t, ok := i.(*PresencesReplace); ok {
-		eh(s, t)
-	}
-}
-
-// rateLimitEventHandler is an event handler for RateLimit events.
-type rateLimitEventHandler func(*Session, *RateLimit)
-
-// Type returns the event type for RateLimit events.
-func (eh rateLimitEventHandler) Type() string {
-	return rateLimitEventType
-}
-
-// Handle is the handler for RateLimit events.
-func (eh rateLimitEventHandler) Handle(s *Session, i interface{}) {
-	if t, ok := i.(*RateLimit); ok {
-		eh(s, t)
-	}
-}
-
 // readyEventHandler is an event handler for Ready events.
 type readyEventHandler func(*Session, *Ready)
 
@@ -689,46 +647,6 @@ func (eh readyEventHandler) New() interface{} {
 // Handle is the handler for Ready events.
 func (eh readyEventHandler) Handle(s *Session, i interface{}) {
 	if t, ok := i.(*Ready); ok {
-		eh(s, t)
-	}
-}
-
-// relationshipAddEventHandler is an event handler for RelationshipAdd events.
-type relationshipAddEventHandler func(*Session, *RelationshipAdd)
-
-// Type returns the event type for RelationshipAdd events.
-func (eh relationshipAddEventHandler) Type() string {
-	return relationshipAddEventType
-}
-
-// New returns a new instance of RelationshipAdd.
-func (eh relationshipAddEventHandler) New() interface{} {
-	return &RelationshipAdd{}
-}
-
-// Handle is the handler for RelationshipAdd events.
-func (eh relationshipAddEventHandler) Handle(s *Session, i interface{}) {
-	if t, ok := i.(*RelationshipAdd); ok {
-		eh(s, t)
-	}
-}
-
-// relationshipRemoveEventHandler is an event handler for RelationshipRemove events.
-type relationshipRemoveEventHandler func(*Session, *RelationshipRemove)
-
-// Type returns the event type for RelationshipRemove events.
-func (eh relationshipRemoveEventHandler) Type() string {
-	return relationshipRemoveEventType
-}
-
-// New returns a new instance of RelationshipRemove.
-func (eh relationshipRemoveEventHandler) New() interface{} {
-	return &RelationshipRemove{}
-}
-
-// Handle is the handler for RelationshipRemove events.
-func (eh relationshipRemoveEventHandler) Handle(s *Session, i interface{}) {
-	if t, ok := i.(*RelationshipRemove); ok {
 		eh(s, t)
 	}
 }
@@ -769,66 +687,6 @@ func (eh typingStartEventHandler) New() interface{} {
 // Handle is the handler for TypingStart events.
 func (eh typingStartEventHandler) Handle(s *Session, i interface{}) {
 	if t, ok := i.(*TypingStart); ok {
-		eh(s, t)
-	}
-}
-
-// userGuildSettingsUpdateEventHandler is an event handler for UserGuildSettingsUpdate events.
-type userGuildSettingsUpdateEventHandler func(*Session, *UserGuildSettingsUpdate)
-
-// Type returns the event type for UserGuildSettingsUpdate events.
-func (eh userGuildSettingsUpdateEventHandler) Type() string {
-	return userGuildSettingsUpdateEventType
-}
-
-// New returns a new instance of UserGuildSettingsUpdate.
-func (eh userGuildSettingsUpdateEventHandler) New() interface{} {
-	return &UserGuildSettingsUpdate{}
-}
-
-// Handle is the handler for UserGuildSettingsUpdate events.
-func (eh userGuildSettingsUpdateEventHandler) Handle(s *Session, i interface{}) {
-	if t, ok := i.(*UserGuildSettingsUpdate); ok {
-		eh(s, t)
-	}
-}
-
-// userNoteUpdateEventHandler is an event handler for UserNoteUpdate events.
-type userNoteUpdateEventHandler func(*Session, *UserNoteUpdate)
-
-// Type returns the event type for UserNoteUpdate events.
-func (eh userNoteUpdateEventHandler) Type() string {
-	return userNoteUpdateEventType
-}
-
-// New returns a new instance of UserNoteUpdate.
-func (eh userNoteUpdateEventHandler) New() interface{} {
-	return &UserNoteUpdate{}
-}
-
-// Handle is the handler for UserNoteUpdate events.
-func (eh userNoteUpdateEventHandler) Handle(s *Session, i interface{}) {
-	if t, ok := i.(*UserNoteUpdate); ok {
-		eh(s, t)
-	}
-}
-
-// userSettingsUpdateEventHandler is an event handler for UserSettingsUpdate events.
-type userSettingsUpdateEventHandler func(*Session, *UserSettingsUpdate)
-
-// Type returns the event type for UserSettingsUpdate events.
-func (eh userSettingsUpdateEventHandler) Type() string {
-	return userSettingsUpdateEventType
-}
-
-// New returns a new instance of UserSettingsUpdate.
-func (eh userSettingsUpdateEventHandler) New() interface{} {
-	return &UserSettingsUpdate{}
-}
-
-// Handle is the handler for UserSettingsUpdate events.
-func (eh userSettingsUpdateEventHandler) Handle(s *Session, i interface{}) {
-	if t, ok := i.(*UserSettingsUpdate); ok {
 		eh(s, t)
 	}
 }
@@ -977,26 +835,12 @@ func handlerForInterface(handler interface{}) EventHandler {
 		return messageUpdateEventHandler(v)
 	case func(*Session, *PresenceUpdate):
 		return presenceUpdateEventHandler(v)
-	case func(*Session, *PresencesReplace):
-		return presencesReplaceEventHandler(v)
-	case func(*Session, *RateLimit):
-		return rateLimitEventHandler(v)
 	case func(*Session, *Ready):
 		return readyEventHandler(v)
-	case func(*Session, *RelationshipAdd):
-		return relationshipAddEventHandler(v)
-	case func(*Session, *RelationshipRemove):
-		return relationshipRemoveEventHandler(v)
 	case func(*Session, *Resumed):
 		return resumedEventHandler(v)
 	case func(*Session, *TypingStart):
 		return typingStartEventHandler(v)
-	case func(*Session, *UserGuildSettingsUpdate):
-		return userGuildSettingsUpdateEventHandler(v)
-	case func(*Session, *UserNoteUpdate):
-		return userNoteUpdateEventHandler(v)
-	case func(*Session, *UserSettingsUpdate):
-		return userSettingsUpdateEventHandler(v)
 	case func(*Session, *UserUpdate):
 		return userUpdateEventHandler(v)
 	case func(*Session, *VoiceServerUpdate):
@@ -1038,15 +882,9 @@ func init() {
 	registerInterfaceProvider(messageReactionRemoveAllEventHandler(nil))
 	registerInterfaceProvider(messageUpdateEventHandler(nil))
 	registerInterfaceProvider(presenceUpdateEventHandler(nil))
-	registerInterfaceProvider(presencesReplaceEventHandler(nil))
 	registerInterfaceProvider(readyEventHandler(nil))
-	registerInterfaceProvider(relationshipAddEventHandler(nil))
-	registerInterfaceProvider(relationshipRemoveEventHandler(nil))
 	registerInterfaceProvider(resumedEventHandler(nil))
 	registerInterfaceProvider(typingStartEventHandler(nil))
-	registerInterfaceProvider(userGuildSettingsUpdateEventHandler(nil))
-	registerInterfaceProvider(userNoteUpdateEventHandler(nil))
-	registerInterfaceProvider(userSettingsUpdateEventHandler(nil))
 	registerInterfaceProvider(userUpdateEventHandler(nil))
 	registerInterfaceProvider(voiceServerUpdateEventHandler(nil))
 	registerInterfaceProvider(voiceStateUpdateEventHandler(nil))

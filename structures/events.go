@@ -1,13 +1,14 @@
-package ws
+package structures
 
 import (
 	"encoding/json"
 )
 
+// TODO: Udate structures
+
 // This file contains all the possible structs that can be
 // handled by AddHandler/EventHandler.
 // DO NOT ADD ANYTHING BUT EVENT HANDLER STRUCTS TO THIS FILE.
-//go:generate go run tools/cmd/eventhandlers/main.go
 
 // Connect is the data for a Connect event.
 // This is a sythetic event and is not dispatched by Discord.
@@ -16,13 +17,6 @@ type Connect struct{}
 // Disconnect is the data for a Disconnect event.
 // This is a sythetic event and is not dispatched by Discord.
 type Disconnect struct{}
-
-// RateLimit is the data for a RateLimit event.
-// This is a sythetic event and is not dispatched by Discord.
-type RateLimit struct {
-	*TooManyRequests
-	URL string
-}
 
 // Event provides a basic initial struct for all websocket events.
 type Event struct {
@@ -36,19 +30,11 @@ type Event struct {
 
 // A Ready stores all data for the websocket READY event.
 type Ready struct {
-	Version         int          `json:"v"`
-	SessionID       string       `json:"session_id"`
-	User            *User        `json:"user"`
-	ReadState       []*ReadState `json:"read_state"`
-	PrivateChannels []*Channel   `json:"private_channels"`
-	Guilds          []*Guild     `json:"guilds"`
-
-	// Undocumented fields
-	Settings          *Settings            `json:"user_settings"`
-	UserGuildSettings []*UserGuildSettings `json:"user_guild_settings"`
-	Relationships     []*Relationship      `json:"relationships"`
-	Presences         []*Presence          `json:"presences"`
-	Notes             map[string]string    `json:"notes"`
+	Version         int        `json:"v"`
+	User            *User      `json:"user"`
+	PrivateChannels []*Channel `json:"private_channels"`
+	Guilds          []*Guild   `json:"guilds"`
+	SessionID       string     `json:"session_id"`
 }
 
 // ChannelCreate is the data for a ChannelCreate event.
@@ -117,18 +103,20 @@ type GuildMemberRemove struct {
 
 // GuildRoleCreate is the data for a GuildRoleCreate event.
 type GuildRoleCreate struct {
-	*GuildRole
+	GuildID string `json:"guild_id"`
+	Role    Role   `json:"role"`
 }
 
 // GuildRoleUpdate is the data for a GuildRoleUpdate event.
 type GuildRoleUpdate struct {
-	*GuildRole
+	GuildID string `json:"guild_id"`
+	Role    Role   `json:"role"`
 }
 
 // A GuildRoleDelete is the data for a GuildRoleDelete event.
 type GuildRoleDelete struct {
-	RoleID  string `json:"role_id"`
 	GuildID string `json:"guild_id"`
+	RoleID  string `json:"role_id"`
 }
 
 // A GuildEmojisUpdate is the data for a guild emoji update event.
@@ -171,42 +159,41 @@ type MessageDelete struct {
 
 // MessageReactionAdd is the data for a MessageReactionAdd event.
 type MessageReactionAdd struct {
-	*MessageReaction
+	UserID    string `json:"user_id"`
+	ChannelID string `json:"channel_id"`
+	MessageID string `json:"message_id"`
+	GuildID   string `json:"guild_id"`
+	Emoji     Emoji  `json:"emoji"`
 }
 
 // MessageReactionRemove is the data for a MessageReactionRemove event.
 type MessageReactionRemove struct {
-	*MessageReaction
+	UserID    string `json:"user_id"`
+	ChannelID string `json:"channel_id"`
+	MessageID string `json:"message_id"`
+	GuildID   string `json:"guild_id"`
+	Emoji     Emoji  `json:"emoji"`
 }
 
 // MessageReactionRemoveAll is the data for a MessageReactionRemoveAll event.
 type MessageReactionRemoveAll struct {
-	*MessageReaction
+	ChannelID string `json:"channel_id"`
+	MessageID string `json:"message_id"`
+	GuildID   string `json:"guild_id"`
 }
 
-// PresencesReplace is the data for a PresencesReplace event.
-type PresencesReplace []*Presence
-
-// PresenceUpdate is the data for a PresenceUpdate event.
+// A PresenceUpdate stores the online, offline, or idle and game status of Guild members.
 type PresenceUpdate struct {
-	Presence
-	GuildID string   `json:"guild_id"`
-	Roles   []string `json:"roles"`
+	User       *User     `json:"user"`
+	Roles      []string  `json:"roles"`
+	Game       *Activity `json:"game"`
+	GuildID    string    `json:"guild_id"`
+	Status     Status    `json:"status"`
+	Activities *Activity `json:"activities"`
 }
 
 // Resumed is the data for a Resumed event.
 type Resumed struct {
-	Trace []string `json:"_trace"`
-}
-
-// RelationshipAdd is the data for a RelationshipAdd event.
-type RelationshipAdd struct {
-	*Relationship
-}
-
-// RelationshipRemove is the data for a RelationshipRemove event.
-type RelationshipRemove struct {
-	*Relationship
 }
 
 // TypingStart is the data for a TypingStart event.
@@ -220,20 +207,6 @@ type TypingStart struct {
 // UserUpdate is the data for a UserUpdate event.
 type UserUpdate struct {
 	*User
-}
-
-// UserSettingsUpdate is the data for a UserSettingsUpdate event.
-type UserSettingsUpdate map[string]interface{}
-
-// UserGuildSettingsUpdate is the data for a UserGuildSettingsUpdate event.
-type UserGuildSettingsUpdate struct {
-	*UserGuildSettings
-}
-
-// UserNoteUpdate is the data for a UserNoteUpdate event.
-type UserNoteUpdate struct {
-	ID   string `json:"id"`
-	Note string `json:"note"`
 }
 
 // VoiceServerUpdate is the data for a VoiceServerUpdate event.
