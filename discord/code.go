@@ -1,4 +1,4 @@
-package http
+package discord
 
 // Block contains Discord JSON Error Response codes
 const (
