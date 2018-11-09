@@ -1,4 +1,4 @@
-package discordgo
+package tmp
 
 // Guild returns a Guild structure of a specific Guild.
 // guildID   : The ID of a Guild

@@ -7,7 +7,7 @@
 
 // This file contains code related to the Message struct
 
-package http
+package tmp
 
 import (
 	"regexp"

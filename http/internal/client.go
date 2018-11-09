@@ -17,10 +17,11 @@ func New(token string) *Client {
 	}
 }
 
+// GetLogLevel return the current log level of Client
 func (s *Client) GetLogLevel() int {
 	return s.LogLevel
 }
 
 func (s *Client) log(msgL int, format string, a ...interface{}) {
-	logging.Log(s, msgL, format, a)
+	logging.Log(s, msgL, format, a...)
 }

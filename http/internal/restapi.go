@@ -139,7 +139,7 @@ func (s *Client) RequestWithLockedBucket(method, urlStr, contentType string, b [
 			return
 		}
 		s.log(logging.LogInformational, "Rate Limiting %s, retry in %d", urlStr, rl.RetryAfter)
-		// Is this event really usefull ? Shouldn't be
+		// Is this event really useful ? Shouldn't be
 		//s.handleEvent(rateLimitEventType, RateLimit{TooManyRequests: &rl, URL: urlStr})
 
 		time.Sleep(rl.RetryAfter * time.Millisecond)

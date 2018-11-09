@@ -9,12 +9,11 @@
 // may be moved about later into separate files but I find it easier to have
 // them all located together.
 
-package http
+package tmp
 
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
 // Mention returns a string which mentions the channel
@@ -118,8 +117,7 @@ type UserGuildSettings struct {
 	ChannelOverrides     []*UserGuildSettingsChannelOverride `json:"channel_overrides"`
 }
 
-// A UserGuildSett
-ingsEdit stores data for editing UserGuildSettings
+// A UserGuildSettingsEdit stores data for editing UserGuildSettings
 type UserGuildSettingsEdit struct {
 	SupressEveryone      bool                                         `json:"suppress_everyone"`
 	Muted                bool                                         `json:"muted"`

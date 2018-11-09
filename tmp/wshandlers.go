@@ -1,3 +1,4 @@
+package tmp
 
 import "github.com/robbix1206/discordgo/logging"
 

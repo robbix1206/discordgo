@@ -17,6 +17,7 @@ import (
 	"time"
 )
 
+// Client is a structure cotaining the necessary to interact with discord HTTP API
 type Client struct {
 	sync.RWMutex
 
