@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // A Channel holds all data related to an individual Discord channel.
 type Channel struct {

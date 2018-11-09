@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // A Role stores information about Discord guild member roles.
 type Role struct {

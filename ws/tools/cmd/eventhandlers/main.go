@@ -74,12 +74,12 @@ var aliasStructTmpl = template.Must(template.New("aliasStruct").
 
 package ws
 
-import "github.com/robbix1206/discordgo/structures"
+import "github.com/robbix1206/discordgo/discord"
 
 // Following are all the event types.
 // Event type values are used to match the events returned by Discord.
 {{range .}}
-type {{.}} = structures.{{.}}{{end}}
+type {{.}} = discord.{{.}}{{end}}
 `))
 
 func main() {

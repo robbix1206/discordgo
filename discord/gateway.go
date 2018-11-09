@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // Status type definition
 type Status string

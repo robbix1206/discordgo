@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // A Invite stores all data related to a specific Discord Guild or Channel invite.
 type Invite struct {

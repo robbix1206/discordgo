@@ -14,7 +14,7 @@ package http
 import (
 	"strconv"
 
-	"github.com/robbix1206/discordgo/structures"
+	"github.com/robbix1206/discordgo/discord"
 )
 
 // Known Discord API Endpoints.
@@ -25,7 +25,7 @@ var (
 	EndpointSmUpcoming = EndpointSm + "upcoming.json"
 
 	EndpointDiscord    = "https://discordapp.com/"
-	EndpointAPI        = EndpointDiscord + "api/v" + structures.APIVersion + "/"
+	EndpointAPI        = EndpointDiscord + "api/v" + discord.APIVersion + "/"
 	EndpointGuilds     = EndpointAPI + "guilds/"
 	EndpointChannels   = EndpointAPI + "channels/"
 	EndpointUsers      = EndpointAPI + "users/"

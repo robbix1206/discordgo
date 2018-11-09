@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // A User stores all data for an individual Discord user.
 type User struct {

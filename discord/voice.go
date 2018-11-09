@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // A VoiceState stores the voice states of Guilds
 type VoiceState struct {

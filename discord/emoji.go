@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // Emoji struct holds data related to Emoji's
 type Emoji struct {

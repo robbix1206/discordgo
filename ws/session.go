@@ -31,29 +31,14 @@ type Session struct {
 	// e.g false = launch event handlers in their own goroutines.
 	SyncEvents bool
 
-	// Exposed but should not be modified by User.
-
-	// Whether the Data Websocket is ready
-	DataReady bool // NOTE: Maye be deprecated soon
-
-	// Status stores the currect status of the websocket connection
-	// this is being tested, may stay, may go away.
-	status int32
-
-	// Whether the Voice Websocket is ready
-	VoiceReady bool // NOTE: Deprecated.
-
-	// Whether the UDP Connection is ready
-	UDPReady bool // NOTE: Deprecated
-
-	// Stores a mapping of guild id's to VoiceConnections
-	VoiceConnections map[string]*VoiceConnection
-
-	// Stores the last HeartbeatAck that was recieved (in UTC)
-	LastHeartbeatAck time.Time
+	// Stores the Duration between an heartbeat and it's ACK
+	latency time.Duration
 
 	// Stores the last Heartbeat sent (in UTC)
-	LastHeartbeatSent time.Time
+	lastHeartbeatSent time.Time
+
+	// ReceivedHeartbeatAck check if we received an ACK between two heatbeats
+	waitingAck bool
 
 	// Event handlers
 	handlersMu   sync.RWMutex
@@ -63,14 +48,8 @@ type Session struct {
 	// The websocket connection.
 	wsConn *websocket.Conn
 
-	// When nil, the session is not listening.
-	listening chan interface{}
-
 	// sequence tracks the current gateway api websocket sequence number
-	sequence *int64
-
-	// stores sessions current Discord Gateway
-	gateway string
+	sequence int64
 
 	// stores session ID of current Gateway connection
 	sessionID string
@@ -80,6 +59,12 @@ type Session struct {
 
 	// userID is the ID of the current User
 	userID string
+
+	// stores sessions current cached Discord Gateway
+	gateway string
+
+	// getGateway is a function that allow to get the gateway URL to connect
+	getGateway func() (string, error)
 }
 
 func New(token string) *Session {
@@ -88,8 +73,6 @@ func New(token string) *Session {
 		ShouldReconnectOnError: true,
 		ShardID:                0,
 		ShardCount:             1,
-		sequence:               new(int64),
-		LastHeartbeatAck:       time.Now().UTC(),
 	}
 }
 
@@ -98,5 +81,5 @@ func (s *Session) GetLogLevel() int {
 }
 
 func (s *Session) log(msgL int, format string, a ...interface{}) {
-	logging.Log(s, msgL, format, a)
+	logging.Log(s, msgL, format, a...)
 }

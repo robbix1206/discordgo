@@ -7,7 +7,7 @@
 
 // This file contains code related to Discord voice suppport
 
-package ws
+package discordgo
 
 import (
 	"encoding/binary"
@@ -32,7 +32,6 @@ import (
 type VoiceConnection struct {
 	sync.RWMutex
 
-	Debug        bool // If true, print extra logging -- DEPRECATED
 	LogLevel     int
 	Ready        bool // If true, voice is ready to send/receive audio
 	UserID       string

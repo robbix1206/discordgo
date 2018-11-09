@@ -2,7 +2,7 @@ package ws
 
 import "github.com/robbix1206/discordgo/logging"
 
-//go:generate go run ./tools/cmd/eventhandlers  ../structures/events.go
+//go:generate go run ./tools/cmd/eventhandlers  ../discord/events.go
 
 // EventHandler is an interface for Discord events.
 type EventHandler interface {
@@ -210,13 +210,6 @@ func setGuildIds(g *Guild) {
 	for _, c := range g.Channels {
 		c.GuildID = g.ID
 	}
-	// FIXME: Should not be useful
-	/*
-		for _, m := range g.Members {
-			m.GuildID = g.ID
-		}
-	*/
-
 	for _, vs := range g.VoiceStates {
 		vs.GuildID = g.ID
 	}
@@ -226,32 +219,20 @@ func setGuildIds(g *Guild) {
 func (s *Session) onInterface(i interface{}) {
 	switch t := i.(type) {
 	case *Ready:
-		for _, g := range t.Guilds {
-			setGuildIds(g)
-		}
 		s.onReady(t)
 	case *GuildCreate:
 		setGuildIds(t.Guild)
 	case *GuildUpdate:
+		// TODO: Note sure if that necessary
 		setGuildIds(t.Guild)
-	case *VoiceServerUpdate:
-		go s.onVoiceServerUpdate(t)
-	case *VoiceStateUpdate:
-		go s.onVoiceStateUpdate(t)
 	}
-	//FIXME: Permit to get all this events
-	/*
-		err := s.State.OnInterface(s, i)
-		if err != nil {
-			s.log(logging.LogDebug, "error dispatching internal event, %s", err)
-		}
-	*/
 }
 
 // onReady handles the ready event.
 func (s *Session) onReady(r *Ready) {
-
+	s.Lock()
 	// Store the SessionID within the Session struct.
 	s.sessionID = r.SessionID
 	s.userID = r.User.ID
+	s.Unlock()
 }

@@ -15,6 +15,7 @@ package discordgo
 
 import (
 	"github.com/robbix1206/discordgo/http"
+	"github.com/robbix1206/discordgo/ws"
 )
 
 // VERSION of DiscordGo, follows Semantic Versioning. (http://semver.org/)
@@ -30,5 +31,6 @@ func New(token string) (s *Session) {
 	return &Session{
 		State:       NewState(),
 		HTTPSession: http.New(token),
+		WsSession:   ws.New(token),
 	}
 }

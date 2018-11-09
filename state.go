@@ -177,7 +177,7 @@ func (s *State) Guild(guildID string) (*Guild, error) {
 
 // PresenceAdd adds a presence to the current world state, or
 // updates it if it already exists.
-func (s *State) PresenceAdd(guildID string, presence *Presence) error {
+func (s *State) PresenceAdd(guildID string, presence *PresenceUpdate) error {
 	if s == nil {
 		return ErrNilState
 	}
@@ -200,10 +200,6 @@ func (s *State) PresenceAdd(guildID string, presence *Presence) error {
 			if presence.Status != "" {
 				guild.Presences[i].Status = presence.Status
 			}
-			if presence.Nick != "" {
-				guild.Presences[i].Nick = presence.Nick
-			}
-
 			//Update the optionally sent user information
 			//ID Is a mandatory field so you should not need to check if it is empty
 			guild.Presences[i].User.ID = presence.User.ID
@@ -216,9 +212,6 @@ func (s *State) PresenceAdd(guildID string, presence *Presence) error {
 			}
 			if presence.User.Email != "" {
 				guild.Presences[i].User.Email = presence.User.Email
-			}
-			if presence.User.Token != "" {
-				guild.Presences[i].User.Token = presence.User.Token
 			}
 			if presence.User.Username != "" {
 				guild.Presences[i].User.Username = presence.User.Username
@@ -233,7 +226,7 @@ func (s *State) PresenceAdd(guildID string, presence *Presence) error {
 }
 
 // PresenceRemove removes a presence from the current world state.
-func (s *State) PresenceRemove(guildID string, presence *Presence) error {
+func (s *State) PresenceRemove(guildID string, presence *PresenceUpdate) error {
 	if s == nil {
 		return ErrNilState
 	}
@@ -257,7 +250,7 @@ func (s *State) PresenceRemove(guildID string, presence *Presence) error {
 }
 
 // Presence gets a presence by ID from a guild.
-func (s *State) Presence(guildID, userID string) (*Presence, error) {
+func (s *State) Presence(guildID, userID string) (*PresenceUpdate, error) {
 	if s == nil {
 		return nil, ErrNilState
 	}
@@ -280,12 +273,12 @@ func (s *State) Presence(guildID, userID string) (*Presence, error) {
 
 // MemberAdd adds a member to the current world state, or
 // updates it if it already exists.
-func (s *State) MemberAdd(member *Member) error {
+func (s *State) MemberAdd(guildID string, member *Member) error {
 	if s == nil {
 		return ErrNilState
 	}
 
-	guild, err := s.Guild(member.GuildID)
+	guild, err := s.Guild(guildID)
 	if err != nil {
 		return err
 	}
@@ -293,7 +286,7 @@ func (s *State) MemberAdd(member *Member) error {
 	s.Lock()
 	defer s.Unlock()
 
-	members, ok := s.memberMap[member.GuildID]
+	members, ok := s.memberMap[guildID]
 	if !ok {
 		return ErrStateNotFound
 	}
@@ -315,12 +308,12 @@ func (s *State) MemberAdd(member *Member) error {
 }
 
 // MemberRemove removes a member from current world state.
-func (s *State) MemberRemove(member *Member) error {
+func (s *State) MemberRemove(guildID string, member *Member) error {
 	if s == nil {
 		return ErrNilState
 	}
 
-	guild, err := s.Guild(member.GuildID)
+	guild, err := s.Guild(guildID)
 	if err != nil {
 		return err
 	}
@@ -328,7 +321,7 @@ func (s *State) MemberRemove(member *Member) error {
 	s.Lock()
 	defer s.Unlock()
 
-	members, ok := s.memberMap[member.GuildID]
+	members, ok := s.memberMap[guildID]
 	if !ok {
 		return ErrStateNotFound
 	}

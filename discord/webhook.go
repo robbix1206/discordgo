@@ -1,4 +1,4 @@
-package structures
+package discord
 
 // Webhook stores the data for a webhook.
 type Webhook struct {
