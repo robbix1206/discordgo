@@ -58,6 +58,7 @@ func (s *Client) Request(method, urlStr, contentType string, b []byte, bucketID 
 	return s.RequestWithLockedBucket(method, urlStr, contentType, b, s.Ratelimiter.LockBucket(bucketID), sequence)
 }
 
+// TODO: Split to be shorter and not trigger gocyclo
 // RequestWithLockedBucket makes a request using a bucket that's already been locked
 func (s *Client) RequestWithLockedBucket(method, urlStr, contentType string, b []byte, bucket *Bucket, sequence int) (response []byte, err error) {
 	if s.LogLevel >= logging.LogDebug {

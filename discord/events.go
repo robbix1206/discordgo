@@ -1,8 +1,6 @@
 package discord
 
-import (
-	"encoding/json"
-)
+import "encoding/json"
 
 // TODO: Udate structures
 

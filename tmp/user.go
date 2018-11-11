@@ -80,6 +80,7 @@ func (s *Session) UserChannelPermissions(userID, channelID string) (apermissions
 	return memberPermissions(guild, channel, member), nil
 }
 
+// Split into multiple functions
 // Calculates the permissions for a member.
 // https://support.discordapp.com/hc/en-us/articles/206141927-How-is-the-permission-hierarchy-structured-
 func memberPermissions(guild *Guild, channel *Channel, member *Member) (apermissions int) {

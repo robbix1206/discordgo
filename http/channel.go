@@ -46,6 +46,7 @@ type MessageSend struct {
 	Files   []*File       `json:"-"`
 }
 
+// InviteCreate holds Invite data necessary for invite create
 type InviteCreate struct {
 	MaxAge    int  `json:"max_age"`
 	MaxUses   int  `json:"max_uses"`
@@ -69,7 +70,7 @@ type ChannelEdit struct {
 // Channel returns a Channel structure of a specific Channel.
 // channelID  : The ID of the Channel you want returned.
 func (s *Session) Channel(channelID string) (st *Channel, err error) {
-	body, err := s.RequestWithBucketID("GET", EndpointChannel(channelID), nil, EndpointChannel(channelID))
+	body, err := s.requestWithBucketID("GET", EndpointChannel(channelID), nil, EndpointChannel(channelID))
 	if err != nil {
 		return
 	}
@@ -91,7 +92,7 @@ func (s *Session) ChannelEdit(channelID, name string) (*Channel, error) {
 // channelID  : The ID of a Channel
 // data          : The channel struct to send
 func (s *Session) ChannelEditComplex(channelID string, data *ChannelEdit) (st *Channel, err error) {
-	body, err := s.RequestWithBucketID("PATCH", EndpointChannel(channelID), data, EndpointChannel(channelID))
+	body, err := s.requestWithBucketID("PATCH", EndpointChannel(channelID), data, EndpointChannel(channelID))
 	if err != nil {
 		return
 	}
@@ -104,7 +105,7 @@ func (s *Session) ChannelEditComplex(channelID string, data *ChannelEdit) (st *C
 // channelID  : The ID of a Channel
 func (s *Session) ChannelDelete(channelID string) (st *Channel, err error) {
 
-	body, err := s.RequestWithBucketID("DELETE", EndpointChannel(channelID), nil, EndpointChannel(channelID))
+	body, err := s.requestWithBucketID("DELETE", EndpointChannel(channelID), nil, EndpointChannel(channelID))
 	if err != nil {
 		return
 	}
@@ -141,7 +142,7 @@ func (s *Session) ChannelMessages(channelID string, limit int, beforeID, afterID
 		uri += "?" + v.Encode()
 	}
 
-	body, err := s.RequestWithBucketID("GET", uri, nil, EndpointChannelMessages(channelID))
+	body, err := s.requestWithBucketID("GET", uri, nil, EndpointChannelMessages(channelID))
 	if err != nil {
 		return
 	}
@@ -155,7 +156,7 @@ func (s *Session) ChannelMessages(channelID string, limit int, beforeID, afterID
 // messageID : the ID of a Message
 func (s *Session) ChannelMessage(channelID, messageID string) (st *Message, err error) {
 
-	response, err := s.RequestWithBucketID("GET", EndpointChannelMessage(channelID, messageID), nil, EndpointChannelMessage(channelID, ""))
+	response, err := s.requestWithBucketID("GET", EndpointChannelMessage(channelID, messageID), nil, EndpointChannelMessage(channelID, ""))
 	if err != nil {
 		return
 	}
@@ -238,7 +239,7 @@ func (s *Session) ChannelMessageSendComplex(channelID string, data *MessageSend)
 
 		response, err = s.request("POST", endpoint, bodywriter.FormDataContentType(), body.Bytes(), endpoint, 0)
 	} else {
-		response, err = s.RequestWithBucketID("POST", endpoint, data, endpoint)
+		response, err = s.requestWithBucketID("POST", endpoint, data, endpoint)
 	}
 	if err != nil {
 		return
@@ -272,7 +273,7 @@ func (s *Session) ChannelMessageSendEmbed(channelID string, embed *MessageEmbed)
 // messageID : The message ID.
 // emojiID   : Either the unicode emoji for the reaction, or a guild emoji identifier.
 func (s *Session) MessageReactionAdd(channelID, messageID, emojiID string) error {
-	_, err := s.RequestWithBucketID("PUT", EndpointMessageReaction(channelID, messageID, emojiID, "@me"), nil, EndpointMessageReaction(channelID, "", "", ""))
+	_, err := s.requestWithBucketID("PUT", EndpointMessageReaction(channelID, messageID, emojiID, "@me"), nil, EndpointMessageReaction(channelID, "", "", ""))
 	return err
 }
 
@@ -282,7 +283,7 @@ func (s *Session) MessageReactionAdd(channelID, messageID, emojiID string) error
 // emojiID   : Either the unicode emoji for the reaction, or a guild emoji identifier.
 // userID	 : @me or ID of the user to delete the reaction for.
 func (s *Session) MessageReactionRemove(channelID, messageID, emojiID, userID string) error {
-	_, err := s.RequestWithBucketID("DELETE", EndpointMessageReaction(channelID, messageID, emojiID, userID), nil, EndpointMessageReaction(channelID, "", "", ""))
+	_, err := s.requestWithBucketID("DELETE", EndpointMessageReaction(channelID, messageID, emojiID, userID), nil, EndpointMessageReaction(channelID, "", "", ""))
 	return err
 }
 
@@ -305,7 +306,7 @@ func (s *Session) MessageReactions(channelID, messageID, emojiID string, limit i
 		uri += "?" + v.Encode()
 	}
 
-	body, err := s.RequestWithBucketID("GET", uri, nil, EndpointMessageReaction(channelID, "", "", ""))
+	body, err := s.requestWithBucketID("GET", uri, nil, EndpointMessageReaction(channelID, "", "", ""))
 	if err != nil {
 		return
 	}
@@ -318,7 +319,7 @@ func (s *Session) MessageReactions(channelID, messageID, emojiID string, limit i
 // channelID : The channel ID
 // messageID : The message ID.
 func (s *Session) MessageReactionsRemoveAll(channelID, messageID string) error {
-	_, err := s.RequestWithBucketID("DELETE", EndpointMessageReactionsAll(channelID, messageID), nil, EndpointMessageReactionsAll(channelID, messageID))
+	_, err := s.requestWithBucketID("DELETE", EndpointMessageReactionsAll(channelID, messageID), nil, EndpointMessageReactionsAll(channelID, messageID))
 	return err
 }
 
@@ -340,7 +341,7 @@ func (s *Session) ChannelMessageEditComplex(m *MessageEdit) (st *Message, err er
 		m.Embed.Type = "rich"
 	}
 
-	response, err := s.RequestWithBucketID("PATCH", EndpointChannelMessage(m.Channel, m.ID), m, EndpointChannelMessage(m.Channel, ""))
+	response, err := s.requestWithBucketID("PATCH", EndpointChannelMessage(m.Channel, m.ID), m, EndpointChannelMessage(m.Channel, ""))
 	if err != nil {
 		return
 	}
@@ -361,7 +362,7 @@ func (s *Session) ChannelMessageEditEmbed(channelID, messageID string, embed *Me
 
 // ChannelMessageDelete deletes a message from the Channel.
 func (s *Session) ChannelMessageDelete(channelID, messageID string) (err error) {
-	_, err = s.RequestWithBucketID("DELETE", EndpointChannelMessage(channelID, messageID), nil, EndpointChannelMessage(channelID, ""))
+	_, err = s.requestWithBucketID("DELETE", EndpointChannelMessage(channelID, messageID), nil, EndpointChannelMessage(channelID, ""))
 	return
 }
 
@@ -390,7 +391,7 @@ func (s *Session) ChannelMessagesBulkDelete(channelID string, messages []string)
 		Messages []string `json:"messages"`
 	}{messages}
 
-	_, err = s.RequestWithBucketID("POST", EndpointChannelMessagesBulkDelete(channelID), data, EndpointChannelMessagesBulkDelete(channelID))
+	_, err = s.requestWithBucketID("POST", EndpointChannelMessagesBulkDelete(channelID), data, EndpointChannelMessagesBulkDelete(channelID))
 	return
 }
 
@@ -405,7 +406,7 @@ func (s *Session) ChannelPermissionSet(channelID, targetID, targetType string, a
 		Deny  int    `json:"deny"`
 	}{targetType, allow, deny}
 
-	_, err = s.RequestWithBucketID("PUT", EndpointChannelPermission(channelID, targetID), data, EndpointChannelPermission(channelID, ""))
+	_, err = s.requestWithBucketID("PUT", EndpointChannelPermission(channelID, targetID), data, EndpointChannelPermission(channelID, ""))
 	return
 }
 
@@ -413,7 +414,7 @@ func (s *Session) ChannelPermissionSet(channelID, targetID, targetType string, a
 // channelID   : The ID of a Channel
 func (s *Session) ChannelInvites(channelID string) (st []*Invite, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointChannelInvites(channelID), nil, EndpointChannelInvites(channelID))
+	body, err := s.requestWithBucketID("GET", EndpointChannelInvites(channelID), nil, EndpointChannelInvites(channelID))
 	if err != nil {
 		return
 	}
@@ -427,7 +428,7 @@ func (s *Session) ChannelInvites(channelID string) (st []*Invite, err error) {
 // data           : A CreateInvite struct with the values MaxAge, MaxUses and Temporaryand unique defined.
 func (s *Session) ChannelInviteCreate(channelID string, data InviteCreate) (st *Invite, err error) {
 
-	body, err := s.RequestWithBucketID("POST", EndpointChannelInvites(channelID), data, EndpointChannelInvites(channelID))
+	body, err := s.requestWithBucketID("POST", EndpointChannelInvites(channelID), data, EndpointChannelInvites(channelID))
 	if err != nil {
 		return
 	}
@@ -440,7 +441,7 @@ func (s *Session) ChannelInviteCreate(channelID string, data InviteCreate) (st *
 // NOTE: Name of this func may change.
 func (s *Session) ChannelPermissionDelete(channelID, targetID string) (err error) {
 
-	_, err = s.RequestWithBucketID("DELETE", EndpointChannelPermission(channelID, targetID), nil, EndpointChannelPermission(channelID, ""))
+	_, err = s.requestWithBucketID("DELETE", EndpointChannelPermission(channelID, targetID), nil, EndpointChannelPermission(channelID, ""))
 	return
 }
 
@@ -448,7 +449,7 @@ func (s *Session) ChannelPermissionDelete(channelID, targetID string) (err error
 // the given channel.
 // channelID  : The ID of a Channel
 func (s *Session) ChannelTyping(channelID string) (err error) {
-	_, err = s.RequestWithBucketID("POST", EndpointChannelTyping(channelID), nil, EndpointChannelTyping(channelID))
+	_, err = s.requestWithBucketID("POST", EndpointChannelTyping(channelID), nil, EndpointChannelTyping(channelID))
 	return
 }
 
@@ -457,7 +458,7 @@ func (s *Session) ChannelTyping(channelID string) (err error) {
 // channelID : The ID of a Channel.
 func (s *Session) ChannelMessagesPinned(channelID string) (st []*Message, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointChannelMessagesPins(channelID), nil, EndpointChannelMessagesPins(channelID))
+	body, err := s.requestWithBucketID("GET", EndpointChannelMessagesPins(channelID), nil, EndpointChannelMessagesPins(channelID))
 
 	if err != nil {
 		return
@@ -471,7 +472,7 @@ func (s *Session) ChannelMessagesPinned(channelID string) (st []*Message, err er
 // channelID: The ID of a channel.
 // messageID: The ID of a message.
 func (s *Session) ChannelMessagePin(channelID, messageID string) (err error) {
-	_, err = s.RequestWithBucketID("PUT", EndpointChannelMessagePin(channelID, messageID), nil, EndpointChannelMessagePin(channelID, ""))
+	_, err = s.requestWithBucketID("PUT", EndpointChannelMessagePin(channelID, messageID), nil, EndpointChannelMessagePin(channelID, ""))
 	return
 }
 
@@ -480,6 +481,6 @@ func (s *Session) ChannelMessagePin(channelID, messageID string) (err error) {
 // messageID: The ID of a message.
 func (s *Session) ChannelMessageUnpin(channelID, messageID string) (err error) {
 
-	_, err = s.RequestWithBucketID("DELETE", EndpointChannelMessagePin(channelID, messageID), nil, EndpointChannelMessagePin(channelID, ""))
+	_, err = s.requestWithBucketID("DELETE", EndpointChannelMessagePin(channelID, messageID), nil, EndpointChannelMessagePin(channelID, ""))
 	return
 }

@@ -69,6 +69,7 @@ type VoiceConnection struct {
 	voiceSpeakingUpdateHandlers []VoiceSpeakingUpdateHandler
 }
 
+// GetLogLevel return the current log level of VoiceConnection
 func (v *VoiceConnection) GetLogLevel() int {
 	return v.LogLevel
 }

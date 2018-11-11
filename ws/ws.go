@@ -34,7 +34,7 @@ var ErrWSShardBounds = errors.New("ShardID must be less than ShardCount")
 // to Discord so it knows the client is still connected.
 // If you do not send these heartbeats Discord will
 // disconnect the websocket connection after a few seconds.
-func (s *Session) routineSystem(wsConn *websocket.Conn, heartbeatIntervalMsec time.Duration) {
+func (s *Socket) routineSystem(wsConn *websocket.Conn, heartbeatIntervalMsec time.Duration) {
 
 	s.log(logging.LogInformational, "called")
 
@@ -81,7 +81,7 @@ func (s *Session) routineSystem(wsConn *websocket.Conn, heartbeatIntervalMsec ti
 
 // listen polls the websocket connection for events, it will stop when the
 // listening channel is closed, or an error occurs.
-func (s *Session) eventListener(wsConn *websocket.Conn, eventChan chan<- *Event) {
+func (s *Socket) eventListener(wsConn *websocket.Conn, eventChan chan<- *Event) {
 
 	s.log(logging.LogInformational, "called")
 	defer close(eventChan)
@@ -98,7 +98,7 @@ func (s *Session) eventListener(wsConn *websocket.Conn, eventChan chan<- *Event)
 	}
 }
 
-func (s *Session) heartbeat() (err error) {
+func (s *Socket) heartbeat() (err error) {
 	sequence := atomic.LoadInt64(&s.sequence)
 	s.log(logging.LogDebug, "sending gateway websocket heartbeat seq %d", sequence)
 	s.Lock()
@@ -118,7 +118,7 @@ func (s *Session) heartbeat() (err error) {
 }
 
 // identify sends the identify packet to the gateway
-func (s *Session) identify() error {
+func (s *Socket) identify() error {
 	data := identifyData{
 		Token: s.Token,
 		Properties: identifyConnectionProperties{
@@ -147,7 +147,7 @@ func (s *Session) identify() error {
 	return err
 }
 
-func (s *Session) resume() error {
+func (s *Socket) resume() error {
 	// Send Op 6 Resume Packet
 	data := resumeData{
 		Token:     s.Token,
@@ -165,7 +165,7 @@ func (s *Session) resume() error {
 	return err
 }
 
-func (s *Session) getEvent() (e *Event, err error) {
+func (s *Socket) getEvent() (e *Event, err error) {
 	messageType, message, err := s.wsConn.ReadMessage()
 	if err != nil {
 		return nil, err
@@ -209,7 +209,7 @@ func (s *Session) getEvent() (e *Event, err error) {
 // If you use the AddHandler() function to register a handler for the
 // "OnEvent" event then all events will be passed to that handler.
 
-func (s *Session) onEvent(e *Event) (err error) {
+func (s *Socket) onEvent(e *Event) (err error) {
 	switch e.Operation {
 	case 0:
 		atomic.StoreInt64(&s.sequence, e.Sequence)
@@ -235,7 +235,7 @@ func (s *Session) onEvent(e *Event) (err error) {
 	return err
 }
 
-func (s *Session) dispatch(e *Event) error {
+func (s *Socket) dispatch(e *Event) error {
 
 	// Do not try to Dispatch a non-Dispatch Message
 	if e.Operation != 0 {
@@ -262,7 +262,7 @@ func (s *Session) dispatch(e *Event) error {
 	return nil
 }
 
-func (s *Session) identifySystem() error {
+func (s *Socket) identifySystem() error {
 	// Send Op 2 Identity Packet
 	err := s.identify()
 	if err != nil {
@@ -293,7 +293,7 @@ func (s *Session) identifySystem() error {
 	}
 }
 
-func (s *Session) resumeSystem() error {
+func (s *Socket) resumeSystem() error {
 	err := s.resume()
 	if err != nil {
 		return err
@@ -323,7 +323,7 @@ func (s *Session) resumeSystem() error {
 	}
 }
 
-func (s *Session) getHello(e *Event) (h *helloData, err error) {
+func (s *Socket) getHello(e *Event) (h *helloData, err error) {
 	if e.Operation != 10 {
 		return nil, fmt.Errorf("expecting Op 10, got Op %d instead", e.Operation)
 	}
@@ -336,7 +336,7 @@ func (s *Session) getHello(e *Event) (h *helloData, err error) {
 	return h, err
 }
 
-func (s *Session) handshake() error {
+func (s *Socket) handshake() error {
 	// The first response from Discord should be an Op 10 (Hello) Packet.
 	e, err := s.getEvent()
 	if err != nil {
@@ -368,7 +368,7 @@ func (s *Session) handshake() error {
 
 // Open creates a websocket connection to Discord.
 // See: https://discordapp.com/developers/docs/topics/gateway#connecting
-func (s *Session) Open() (err error) {
+func (s *Socket) Open() (err error) {
 	s.log(logging.LogInformational, "called")
 	// Prevent Open or other major Session functions from
 	// being called while Open is still running.
@@ -413,7 +413,7 @@ func (s *Session) Open() (err error) {
 }
 
 // Close closes the websocket
-func (s *Session) Close() (err error) {
+func (s *Socket) Close() (err error) {
 
 	s.log(logging.LogInformational, "called")
 	s.Lock()
@@ -448,7 +448,7 @@ func (s *Session) Close() (err error) {
 	return
 }
 
-func (s *Session) Reconnect() {
+func (s *Socket) Reconnect() {
 
 	s.log(logging.LogInformational, "called")
 
@@ -477,7 +477,7 @@ func (s *Session) Reconnect() {
 	}
 }
 
-func (s *Session) autoReconnect() {
+func (s *Socket) autoReconnect() {
 	if s.ShouldReconnectOnError {
 		s.Reconnect()
 	}

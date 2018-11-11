@@ -47,7 +47,7 @@ const (
 )
 
 // channelCreateEventHandler is an event handler for ChannelCreate events.
-type channelCreateEventHandler func(*Session, *ChannelCreate)
+type channelCreateEventHandler func(*Socket, *ChannelCreate)
 
 // Type returns the event type for ChannelCreate events.
 func (eh channelCreateEventHandler) Type() string {
@@ -60,14 +60,14 @@ func (eh channelCreateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for ChannelCreate events.
-func (eh channelCreateEventHandler) Handle(s *Session, i interface{}) {
+func (eh channelCreateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*ChannelCreate); ok {
 		eh(s, t)
 	}
 }
 
 // channelDeleteEventHandler is an event handler for ChannelDelete events.
-type channelDeleteEventHandler func(*Session, *ChannelDelete)
+type channelDeleteEventHandler func(*Socket, *ChannelDelete)
 
 // Type returns the event type for ChannelDelete events.
 func (eh channelDeleteEventHandler) Type() string {
@@ -80,14 +80,14 @@ func (eh channelDeleteEventHandler) New() interface{} {
 }
 
 // Handle is the handler for ChannelDelete events.
-func (eh channelDeleteEventHandler) Handle(s *Session, i interface{}) {
+func (eh channelDeleteEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*ChannelDelete); ok {
 		eh(s, t)
 	}
 }
 
 // channelPinsUpdateEventHandler is an event handler for ChannelPinsUpdate events.
-type channelPinsUpdateEventHandler func(*Session, *ChannelPinsUpdate)
+type channelPinsUpdateEventHandler func(*Socket, *ChannelPinsUpdate)
 
 // Type returns the event type for ChannelPinsUpdate events.
 func (eh channelPinsUpdateEventHandler) Type() string {
@@ -100,14 +100,14 @@ func (eh channelPinsUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for ChannelPinsUpdate events.
-func (eh channelPinsUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh channelPinsUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*ChannelPinsUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // channelUpdateEventHandler is an event handler for ChannelUpdate events.
-type channelUpdateEventHandler func(*Session, *ChannelUpdate)
+type channelUpdateEventHandler func(*Socket, *ChannelUpdate)
 
 // Type returns the event type for ChannelUpdate events.
 func (eh channelUpdateEventHandler) Type() string {
@@ -120,14 +120,14 @@ func (eh channelUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for ChannelUpdate events.
-func (eh channelUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh channelUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*ChannelUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // connectEventHandler is an event handler for Connect events.
-type connectEventHandler func(*Session, *Connect)
+type connectEventHandler func(*Socket, *Connect)
 
 // Type returns the event type for Connect events.
 func (eh connectEventHandler) Type() string {
@@ -135,14 +135,14 @@ func (eh connectEventHandler) Type() string {
 }
 
 // Handle is the handler for Connect events.
-func (eh connectEventHandler) Handle(s *Session, i interface{}) {
+func (eh connectEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*Connect); ok {
 		eh(s, t)
 	}
 }
 
 // disconnectEventHandler is an event handler for Disconnect events.
-type disconnectEventHandler func(*Session, *Disconnect)
+type disconnectEventHandler func(*Socket, *Disconnect)
 
 // Type returns the event type for Disconnect events.
 func (eh disconnectEventHandler) Type() string {
@@ -150,14 +150,14 @@ func (eh disconnectEventHandler) Type() string {
 }
 
 // Handle is the handler for Disconnect events.
-func (eh disconnectEventHandler) Handle(s *Session, i interface{}) {
+func (eh disconnectEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*Disconnect); ok {
 		eh(s, t)
 	}
 }
 
 // eventEventHandler is an event handler for Event events.
-type eventEventHandler func(*Session, *Event)
+type eventEventHandler func(*Socket, *Event)
 
 // Type returns the event type for Event events.
 func (eh eventEventHandler) Type() string {
@@ -165,14 +165,14 @@ func (eh eventEventHandler) Type() string {
 }
 
 // Handle is the handler for Event events.
-func (eh eventEventHandler) Handle(s *Session, i interface{}) {
+func (eh eventEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*Event); ok {
 		eh(s, t)
 	}
 }
 
 // guildBanAddEventHandler is an event handler for GuildBanAdd events.
-type guildBanAddEventHandler func(*Session, *GuildBanAdd)
+type guildBanAddEventHandler func(*Socket, *GuildBanAdd)
 
 // Type returns the event type for GuildBanAdd events.
 func (eh guildBanAddEventHandler) Type() string {
@@ -185,14 +185,14 @@ func (eh guildBanAddEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildBanAdd events.
-func (eh guildBanAddEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildBanAddEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildBanAdd); ok {
 		eh(s, t)
 	}
 }
 
 // guildBanRemoveEventHandler is an event handler for GuildBanRemove events.
-type guildBanRemoveEventHandler func(*Session, *GuildBanRemove)
+type guildBanRemoveEventHandler func(*Socket, *GuildBanRemove)
 
 // Type returns the event type for GuildBanRemove events.
 func (eh guildBanRemoveEventHandler) Type() string {
@@ -205,14 +205,14 @@ func (eh guildBanRemoveEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildBanRemove events.
-func (eh guildBanRemoveEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildBanRemoveEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildBanRemove); ok {
 		eh(s, t)
 	}
 }
 
 // guildCreateEventHandler is an event handler for GuildCreate events.
-type guildCreateEventHandler func(*Session, *GuildCreate)
+type guildCreateEventHandler func(*Socket, *GuildCreate)
 
 // Type returns the event type for GuildCreate events.
 func (eh guildCreateEventHandler) Type() string {
@@ -225,14 +225,14 @@ func (eh guildCreateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildCreate events.
-func (eh guildCreateEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildCreateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildCreate); ok {
 		eh(s, t)
 	}
 }
 
 // guildDeleteEventHandler is an event handler for GuildDelete events.
-type guildDeleteEventHandler func(*Session, *GuildDelete)
+type guildDeleteEventHandler func(*Socket, *GuildDelete)
 
 // Type returns the event type for GuildDelete events.
 func (eh guildDeleteEventHandler) Type() string {
@@ -245,14 +245,14 @@ func (eh guildDeleteEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildDelete events.
-func (eh guildDeleteEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildDeleteEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildDelete); ok {
 		eh(s, t)
 	}
 }
 
 // guildEmojisUpdateEventHandler is an event handler for GuildEmojisUpdate events.
-type guildEmojisUpdateEventHandler func(*Session, *GuildEmojisUpdate)
+type guildEmojisUpdateEventHandler func(*Socket, *GuildEmojisUpdate)
 
 // Type returns the event type for GuildEmojisUpdate events.
 func (eh guildEmojisUpdateEventHandler) Type() string {
@@ -265,14 +265,14 @@ func (eh guildEmojisUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildEmojisUpdate events.
-func (eh guildEmojisUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildEmojisUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildEmojisUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // guildIntegrationsUpdateEventHandler is an event handler for GuildIntegrationsUpdate events.
-type guildIntegrationsUpdateEventHandler func(*Session, *GuildIntegrationsUpdate)
+type guildIntegrationsUpdateEventHandler func(*Socket, *GuildIntegrationsUpdate)
 
 // Type returns the event type for GuildIntegrationsUpdate events.
 func (eh guildIntegrationsUpdateEventHandler) Type() string {
@@ -285,14 +285,14 @@ func (eh guildIntegrationsUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildIntegrationsUpdate events.
-func (eh guildIntegrationsUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildIntegrationsUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildIntegrationsUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // guildMemberAddEventHandler is an event handler for GuildMemberAdd events.
-type guildMemberAddEventHandler func(*Session, *GuildMemberAdd)
+type guildMemberAddEventHandler func(*Socket, *GuildMemberAdd)
 
 // Type returns the event type for GuildMemberAdd events.
 func (eh guildMemberAddEventHandler) Type() string {
@@ -305,14 +305,14 @@ func (eh guildMemberAddEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildMemberAdd events.
-func (eh guildMemberAddEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildMemberAddEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildMemberAdd); ok {
 		eh(s, t)
 	}
 }
 
 // guildMemberRemoveEventHandler is an event handler for GuildMemberRemove events.
-type guildMemberRemoveEventHandler func(*Session, *GuildMemberRemove)
+type guildMemberRemoveEventHandler func(*Socket, *GuildMemberRemove)
 
 // Type returns the event type for GuildMemberRemove events.
 func (eh guildMemberRemoveEventHandler) Type() string {
@@ -325,14 +325,14 @@ func (eh guildMemberRemoveEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildMemberRemove events.
-func (eh guildMemberRemoveEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildMemberRemoveEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildMemberRemove); ok {
 		eh(s, t)
 	}
 }
 
 // guildMemberUpdateEventHandler is an event handler for GuildMemberUpdate events.
-type guildMemberUpdateEventHandler func(*Session, *GuildMemberUpdate)
+type guildMemberUpdateEventHandler func(*Socket, *GuildMemberUpdate)
 
 // Type returns the event type for GuildMemberUpdate events.
 func (eh guildMemberUpdateEventHandler) Type() string {
@@ -345,14 +345,14 @@ func (eh guildMemberUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildMemberUpdate events.
-func (eh guildMemberUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildMemberUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildMemberUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // guildMembersChunkEventHandler is an event handler for GuildMembersChunk events.
-type guildMembersChunkEventHandler func(*Session, *GuildMembersChunk)
+type guildMembersChunkEventHandler func(*Socket, *GuildMembersChunk)
 
 // Type returns the event type for GuildMembersChunk events.
 func (eh guildMembersChunkEventHandler) Type() string {
@@ -365,14 +365,14 @@ func (eh guildMembersChunkEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildMembersChunk events.
-func (eh guildMembersChunkEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildMembersChunkEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildMembersChunk); ok {
 		eh(s, t)
 	}
 }
 
 // guildRoleCreateEventHandler is an event handler for GuildRoleCreate events.
-type guildRoleCreateEventHandler func(*Session, *GuildRoleCreate)
+type guildRoleCreateEventHandler func(*Socket, *GuildRoleCreate)
 
 // Type returns the event type for GuildRoleCreate events.
 func (eh guildRoleCreateEventHandler) Type() string {
@@ -385,14 +385,14 @@ func (eh guildRoleCreateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildRoleCreate events.
-func (eh guildRoleCreateEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildRoleCreateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildRoleCreate); ok {
 		eh(s, t)
 	}
 }
 
 // guildRoleDeleteEventHandler is an event handler for GuildRoleDelete events.
-type guildRoleDeleteEventHandler func(*Session, *GuildRoleDelete)
+type guildRoleDeleteEventHandler func(*Socket, *GuildRoleDelete)
 
 // Type returns the event type for GuildRoleDelete events.
 func (eh guildRoleDeleteEventHandler) Type() string {
@@ -405,14 +405,14 @@ func (eh guildRoleDeleteEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildRoleDelete events.
-func (eh guildRoleDeleteEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildRoleDeleteEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildRoleDelete); ok {
 		eh(s, t)
 	}
 }
 
 // guildRoleUpdateEventHandler is an event handler for GuildRoleUpdate events.
-type guildRoleUpdateEventHandler func(*Session, *GuildRoleUpdate)
+type guildRoleUpdateEventHandler func(*Socket, *GuildRoleUpdate)
 
 // Type returns the event type for GuildRoleUpdate events.
 func (eh guildRoleUpdateEventHandler) Type() string {
@@ -425,14 +425,14 @@ func (eh guildRoleUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildRoleUpdate events.
-func (eh guildRoleUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildRoleUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildRoleUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // guildUpdateEventHandler is an event handler for GuildUpdate events.
-type guildUpdateEventHandler func(*Session, *GuildUpdate)
+type guildUpdateEventHandler func(*Socket, *GuildUpdate)
 
 // Type returns the event type for GuildUpdate events.
 func (eh guildUpdateEventHandler) Type() string {
@@ -445,14 +445,14 @@ func (eh guildUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for GuildUpdate events.
-func (eh guildUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh guildUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*GuildUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // messageAckEventHandler is an event handler for MessageAck events.
-type messageAckEventHandler func(*Session, *MessageAck)
+type messageAckEventHandler func(*Socket, *MessageAck)
 
 // Type returns the event type for MessageAck events.
 func (eh messageAckEventHandler) Type() string {
@@ -465,14 +465,14 @@ func (eh messageAckEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageAck events.
-func (eh messageAckEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageAckEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageAck); ok {
 		eh(s, t)
 	}
 }
 
 // messageCreateEventHandler is an event handler for MessageCreate events.
-type messageCreateEventHandler func(*Session, *MessageCreate)
+type messageCreateEventHandler func(*Socket, *MessageCreate)
 
 // Type returns the event type for MessageCreate events.
 func (eh messageCreateEventHandler) Type() string {
@@ -485,14 +485,14 @@ func (eh messageCreateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageCreate events.
-func (eh messageCreateEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageCreateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageCreate); ok {
 		eh(s, t)
 	}
 }
 
 // messageDeleteEventHandler is an event handler for MessageDelete events.
-type messageDeleteEventHandler func(*Session, *MessageDelete)
+type messageDeleteEventHandler func(*Socket, *MessageDelete)
 
 // Type returns the event type for MessageDelete events.
 func (eh messageDeleteEventHandler) Type() string {
@@ -505,14 +505,14 @@ func (eh messageDeleteEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageDelete events.
-func (eh messageDeleteEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageDeleteEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageDelete); ok {
 		eh(s, t)
 	}
 }
 
 // messageDeleteBulkEventHandler is an event handler for MessageDeleteBulk events.
-type messageDeleteBulkEventHandler func(*Session, *MessageDeleteBulk)
+type messageDeleteBulkEventHandler func(*Socket, *MessageDeleteBulk)
 
 // Type returns the event type for MessageDeleteBulk events.
 func (eh messageDeleteBulkEventHandler) Type() string {
@@ -525,14 +525,14 @@ func (eh messageDeleteBulkEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageDeleteBulk events.
-func (eh messageDeleteBulkEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageDeleteBulkEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageDeleteBulk); ok {
 		eh(s, t)
 	}
 }
 
 // messageReactionAddEventHandler is an event handler for MessageReactionAdd events.
-type messageReactionAddEventHandler func(*Session, *MessageReactionAdd)
+type messageReactionAddEventHandler func(*Socket, *MessageReactionAdd)
 
 // Type returns the event type for MessageReactionAdd events.
 func (eh messageReactionAddEventHandler) Type() string {
@@ -545,14 +545,14 @@ func (eh messageReactionAddEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageReactionAdd events.
-func (eh messageReactionAddEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageReactionAddEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageReactionAdd); ok {
 		eh(s, t)
 	}
 }
 
 // messageReactionRemoveEventHandler is an event handler for MessageReactionRemove events.
-type messageReactionRemoveEventHandler func(*Session, *MessageReactionRemove)
+type messageReactionRemoveEventHandler func(*Socket, *MessageReactionRemove)
 
 // Type returns the event type for MessageReactionRemove events.
 func (eh messageReactionRemoveEventHandler) Type() string {
@@ -565,14 +565,14 @@ func (eh messageReactionRemoveEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageReactionRemove events.
-func (eh messageReactionRemoveEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageReactionRemoveEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageReactionRemove); ok {
 		eh(s, t)
 	}
 }
 
 // messageReactionRemoveAllEventHandler is an event handler for MessageReactionRemoveAll events.
-type messageReactionRemoveAllEventHandler func(*Session, *MessageReactionRemoveAll)
+type messageReactionRemoveAllEventHandler func(*Socket, *MessageReactionRemoveAll)
 
 // Type returns the event type for MessageReactionRemoveAll events.
 func (eh messageReactionRemoveAllEventHandler) Type() string {
@@ -585,14 +585,14 @@ func (eh messageReactionRemoveAllEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageReactionRemoveAll events.
-func (eh messageReactionRemoveAllEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageReactionRemoveAllEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageReactionRemoveAll); ok {
 		eh(s, t)
 	}
 }
 
 // messageUpdateEventHandler is an event handler for MessageUpdate events.
-type messageUpdateEventHandler func(*Session, *MessageUpdate)
+type messageUpdateEventHandler func(*Socket, *MessageUpdate)
 
 // Type returns the event type for MessageUpdate events.
 func (eh messageUpdateEventHandler) Type() string {
@@ -605,14 +605,14 @@ func (eh messageUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for MessageUpdate events.
-func (eh messageUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh messageUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*MessageUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // presenceUpdateEventHandler is an event handler for PresenceUpdate events.
-type presenceUpdateEventHandler func(*Session, *PresenceUpdate)
+type presenceUpdateEventHandler func(*Socket, *PresenceUpdate)
 
 // Type returns the event type for PresenceUpdate events.
 func (eh presenceUpdateEventHandler) Type() string {
@@ -625,14 +625,14 @@ func (eh presenceUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for PresenceUpdate events.
-func (eh presenceUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh presenceUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*PresenceUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // readyEventHandler is an event handler for Ready events.
-type readyEventHandler func(*Session, *Ready)
+type readyEventHandler func(*Socket, *Ready)
 
 // Type returns the event type for Ready events.
 func (eh readyEventHandler) Type() string {
@@ -645,14 +645,14 @@ func (eh readyEventHandler) New() interface{} {
 }
 
 // Handle is the handler for Ready events.
-func (eh readyEventHandler) Handle(s *Session, i interface{}) {
+func (eh readyEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*Ready); ok {
 		eh(s, t)
 	}
 }
 
 // resumedEventHandler is an event handler for Resumed events.
-type resumedEventHandler func(*Session, *Resumed)
+type resumedEventHandler func(*Socket, *Resumed)
 
 // Type returns the event type for Resumed events.
 func (eh resumedEventHandler) Type() string {
@@ -665,14 +665,14 @@ func (eh resumedEventHandler) New() interface{} {
 }
 
 // Handle is the handler for Resumed events.
-func (eh resumedEventHandler) Handle(s *Session, i interface{}) {
+func (eh resumedEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*Resumed); ok {
 		eh(s, t)
 	}
 }
 
 // typingStartEventHandler is an event handler for TypingStart events.
-type typingStartEventHandler func(*Session, *TypingStart)
+type typingStartEventHandler func(*Socket, *TypingStart)
 
 // Type returns the event type for TypingStart events.
 func (eh typingStartEventHandler) Type() string {
@@ -685,14 +685,14 @@ func (eh typingStartEventHandler) New() interface{} {
 }
 
 // Handle is the handler for TypingStart events.
-func (eh typingStartEventHandler) Handle(s *Session, i interface{}) {
+func (eh typingStartEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*TypingStart); ok {
 		eh(s, t)
 	}
 }
 
 // userUpdateEventHandler is an event handler for UserUpdate events.
-type userUpdateEventHandler func(*Session, *UserUpdate)
+type userUpdateEventHandler func(*Socket, *UserUpdate)
 
 // Type returns the event type for UserUpdate events.
 func (eh userUpdateEventHandler) Type() string {
@@ -705,14 +705,14 @@ func (eh userUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for UserUpdate events.
-func (eh userUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh userUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*UserUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // voiceServerUpdateEventHandler is an event handler for VoiceServerUpdate events.
-type voiceServerUpdateEventHandler func(*Session, *VoiceServerUpdate)
+type voiceServerUpdateEventHandler func(*Socket, *VoiceServerUpdate)
 
 // Type returns the event type for VoiceServerUpdate events.
 func (eh voiceServerUpdateEventHandler) Type() string {
@@ -725,14 +725,14 @@ func (eh voiceServerUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for VoiceServerUpdate events.
-func (eh voiceServerUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh voiceServerUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*VoiceServerUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // voiceStateUpdateEventHandler is an event handler for VoiceStateUpdate events.
-type voiceStateUpdateEventHandler func(*Session, *VoiceStateUpdate)
+type voiceStateUpdateEventHandler func(*Socket, *VoiceStateUpdate)
 
 // Type returns the event type for VoiceStateUpdate events.
 func (eh voiceStateUpdateEventHandler) Type() string {
@@ -745,14 +745,14 @@ func (eh voiceStateUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for VoiceStateUpdate events.
-func (eh voiceStateUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh voiceStateUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*VoiceStateUpdate); ok {
 		eh(s, t)
 	}
 }
 
 // webhooksUpdateEventHandler is an event handler for WebhooksUpdate events.
-type webhooksUpdateEventHandler func(*Session, *WebhooksUpdate)
+type webhooksUpdateEventHandler func(*Socket, *WebhooksUpdate)
 
 // Type returns the event type for WebhooksUpdate events.
 func (eh webhooksUpdateEventHandler) Type() string {
@@ -765,7 +765,7 @@ func (eh webhooksUpdateEventHandler) New() interface{} {
 }
 
 // Handle is the handler for WebhooksUpdate events.
-func (eh webhooksUpdateEventHandler) Handle(s *Session, i interface{}) {
+func (eh webhooksUpdateEventHandler) Handle(s *Socket, i interface{}) {
 	if t, ok := i.(*WebhooksUpdate); ok {
 		eh(s, t)
 	}
@@ -773,81 +773,81 @@ func (eh webhooksUpdateEventHandler) Handle(s *Session, i interface{}) {
 
 func handlerForInterface(handler interface{}) EventHandler {
 	switch v := handler.(type) {
-	case func(*Session, interface{}):
+	case func(*Socket, interface{}):
 		return interfaceEventHandler(v)
-	case func(*Session, *ChannelCreate):
+	case func(*Socket, *ChannelCreate):
 		return channelCreateEventHandler(v)
-	case func(*Session, *ChannelDelete):
+	case func(*Socket, *ChannelDelete):
 		return channelDeleteEventHandler(v)
-	case func(*Session, *ChannelPinsUpdate):
+	case func(*Socket, *ChannelPinsUpdate):
 		return channelPinsUpdateEventHandler(v)
-	case func(*Session, *ChannelUpdate):
+	case func(*Socket, *ChannelUpdate):
 		return channelUpdateEventHandler(v)
-	case func(*Session, *Connect):
+	case func(*Socket, *Connect):
 		return connectEventHandler(v)
-	case func(*Session, *Disconnect):
+	case func(*Socket, *Disconnect):
 		return disconnectEventHandler(v)
-	case func(*Session, *Event):
+	case func(*Socket, *Event):
 		return eventEventHandler(v)
-	case func(*Session, *GuildBanAdd):
+	case func(*Socket, *GuildBanAdd):
 		return guildBanAddEventHandler(v)
-	case func(*Session, *GuildBanRemove):
+	case func(*Socket, *GuildBanRemove):
 		return guildBanRemoveEventHandler(v)
-	case func(*Session, *GuildCreate):
+	case func(*Socket, *GuildCreate):
 		return guildCreateEventHandler(v)
-	case func(*Session, *GuildDelete):
+	case func(*Socket, *GuildDelete):
 		return guildDeleteEventHandler(v)
-	case func(*Session, *GuildEmojisUpdate):
+	case func(*Socket, *GuildEmojisUpdate):
 		return guildEmojisUpdateEventHandler(v)
-	case func(*Session, *GuildIntegrationsUpdate):
+	case func(*Socket, *GuildIntegrationsUpdate):
 		return guildIntegrationsUpdateEventHandler(v)
-	case func(*Session, *GuildMemberAdd):
+	case func(*Socket, *GuildMemberAdd):
 		return guildMemberAddEventHandler(v)
-	case func(*Session, *GuildMemberRemove):
+	case func(*Socket, *GuildMemberRemove):
 		return guildMemberRemoveEventHandler(v)
-	case func(*Session, *GuildMemberUpdate):
+	case func(*Socket, *GuildMemberUpdate):
 		return guildMemberUpdateEventHandler(v)
-	case func(*Session, *GuildMembersChunk):
+	case func(*Socket, *GuildMembersChunk):
 		return guildMembersChunkEventHandler(v)
-	case func(*Session, *GuildRoleCreate):
+	case func(*Socket, *GuildRoleCreate):
 		return guildRoleCreateEventHandler(v)
-	case func(*Session, *GuildRoleDelete):
+	case func(*Socket, *GuildRoleDelete):
 		return guildRoleDeleteEventHandler(v)
-	case func(*Session, *GuildRoleUpdate):
+	case func(*Socket, *GuildRoleUpdate):
 		return guildRoleUpdateEventHandler(v)
-	case func(*Session, *GuildUpdate):
+	case func(*Socket, *GuildUpdate):
 		return guildUpdateEventHandler(v)
-	case func(*Session, *MessageAck):
+	case func(*Socket, *MessageAck):
 		return messageAckEventHandler(v)
-	case func(*Session, *MessageCreate):
+	case func(*Socket, *MessageCreate):
 		return messageCreateEventHandler(v)
-	case func(*Session, *MessageDelete):
+	case func(*Socket, *MessageDelete):
 		return messageDeleteEventHandler(v)
-	case func(*Session, *MessageDeleteBulk):
+	case func(*Socket, *MessageDeleteBulk):
 		return messageDeleteBulkEventHandler(v)
-	case func(*Session, *MessageReactionAdd):
+	case func(*Socket, *MessageReactionAdd):
 		return messageReactionAddEventHandler(v)
-	case func(*Session, *MessageReactionRemove):
+	case func(*Socket, *MessageReactionRemove):
 		return messageReactionRemoveEventHandler(v)
-	case func(*Session, *MessageReactionRemoveAll):
+	case func(*Socket, *MessageReactionRemoveAll):
 		return messageReactionRemoveAllEventHandler(v)
-	case func(*Session, *MessageUpdate):
+	case func(*Socket, *MessageUpdate):
 		return messageUpdateEventHandler(v)
-	case func(*Session, *PresenceUpdate):
+	case func(*Socket, *PresenceUpdate):
 		return presenceUpdateEventHandler(v)
-	case func(*Session, *Ready):
+	case func(*Socket, *Ready):
 		return readyEventHandler(v)
-	case func(*Session, *Resumed):
+	case func(*Socket, *Resumed):
 		return resumedEventHandler(v)
-	case func(*Session, *TypingStart):
+	case func(*Socket, *TypingStart):
 		return typingStartEventHandler(v)
-	case func(*Session, *UserUpdate):
+	case func(*Socket, *UserUpdate):
 		return userUpdateEventHandler(v)
-	case func(*Session, *VoiceServerUpdate):
+	case func(*Socket, *VoiceServerUpdate):
 		return voiceServerUpdateEventHandler(v)
-	case func(*Session, *VoiceStateUpdate):
+	case func(*Socket, *VoiceStateUpdate):
 		return voiceStateUpdateEventHandler(v)
-	case func(*Session, *WebhooksUpdate):
+	case func(*Socket, *WebhooksUpdate):
 		return webhooksUpdateEventHandler(v)
 	}
 

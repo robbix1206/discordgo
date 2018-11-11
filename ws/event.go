@@ -12,7 +12,7 @@ type EventHandler interface {
 	// Handle is called whenever an event of Type() happens.
 	// It is the receivers responsibility to type assert that the interface
 	// is the expected struct.
-	Handle(*Session, interface{})
+	Handle(*Socket, interface{})
 }
 
 // EventInterfaceProvider is an interface for providing empty interfaces for
@@ -31,7 +31,7 @@ type EventInterfaceProvider interface {
 const interfaceEventType = "__INTERFACE__"
 
 // interfaceEventHandler is an event handler for interface{} events.
-type interfaceEventHandler func(*Session, interface{})
+type interfaceEventHandler func(*Socket, interface{})
 
 // Type returns the event type for interface{} events.
 func (eh interfaceEventHandler) Type() string {
@@ -39,7 +39,7 @@ func (eh interfaceEventHandler) Type() string {
 }
 
 // Handle is the handler for an interface{} event.
-func (eh interfaceEventHandler) Handle(s *Session, i interface{}) {
+func (eh interfaceEventHandler) Handle(s *Socket, i interface{}) {
 	eh(s, i)
 }
 
@@ -66,7 +66,7 @@ type eventHandlerInstance struct {
 
 // addEventHandler adds an event handler that will be fired anytime
 // the Discord WSAPI matching eventHandler.Type() fires.
-func (s *Session) addEventHandler(eventHandler EventHandler) func() {
+func (s *Socket) addEventHandler(eventHandler EventHandler) func() {
 	s.handlersMu.Lock()
 	defer s.handlersMu.Unlock()
 
@@ -84,7 +84,7 @@ func (s *Session) addEventHandler(eventHandler EventHandler) func() {
 
 // addEventHandler adds an event handler that will be fired the next time
 // the Discord WSAPI matching eventHandler.Type() fires.
-func (s *Session) addEventHandlerOnce(eventHandler EventHandler) func() {
+func (s *Socket) addEventHandlerOnce(eventHandler EventHandler) func() {
 	s.handlersMu.Lock()
 	defer s.handlersMu.Unlock()
 
@@ -121,7 +121,7 @@ func (s *Session) addEventHandlerOnce(eventHandler EventHandler) func() {
 //
 // The return value of this method is a function, that when called will remove the
 // event handler.
-func (s *Session) AddHandler(handler interface{}) func() {
+func (s *Socket) AddHandler(handler interface{}) func() {
 	eh := handlerForInterface(handler)
 
 	if eh == nil {
@@ -135,7 +135,7 @@ func (s *Session) AddHandler(handler interface{}) func() {
 // AddHandlerOnce allows you to add an event handler that will be fired the next time
 // the Discord WSAPI event that matches the function fires.
 // See AddHandler for more details.
-func (s *Session) AddHandlerOnce(handler interface{}) func() {
+func (s *Socket) AddHandlerOnce(handler interface{}) func() {
 	eh := handlerForInterface(handler)
 
 	if eh == nil {
@@ -147,7 +147,7 @@ func (s *Session) AddHandlerOnce(handler interface{}) func() {
 }
 
 // removeEventHandler instance removes an event handler instance.
-func (s *Session) removeEventHandlerInstance(t string, ehi *eventHandlerInstance) {
+func (s *Socket) removeEventHandlerInstance(t string, ehi *eventHandlerInstance) {
 	s.handlersMu.Lock()
 	defer s.handlersMu.Unlock()
 
@@ -167,7 +167,7 @@ func (s *Session) removeEventHandlerInstance(t string, ehi *eventHandlerInstance
 }
 
 // Handles calling permanent and once handlers for an event type.
-func (s *Session) handle(t string, i interface{}) {
+func (s *Socket) handle(t string, i interface{}) {
 	for _, eh := range s.handlers[t] {
 		if s.SyncEvents {
 			eh.eventHandler.Handle(s, i)
@@ -190,7 +190,7 @@ func (s *Session) handle(t string, i interface{}) {
 
 // Handles an event type by calling internal methods, firing handlers and firing the
 // interface{} event.
-func (s *Session) handleEvent(t string, i interface{}) {
+func (s *Socket) handleEvent(t string, i interface{}) {
 	s.handlersMu.RLock()
 	defer s.handlersMu.RUnlock()
 
@@ -216,7 +216,7 @@ func setGuildIds(g *Guild) {
 }
 
 // onInterface handles all internal events and routes them to the appropriate internal handler.
-func (s *Session) onInterface(i interface{}) {
+func (s *Socket) onInterface(i interface{}) {
 	switch t := i.(type) {
 	case *Ready:
 		s.onReady(t)
@@ -229,7 +229,7 @@ func (s *Session) onInterface(i interface{}) {
 }
 
 // onReady handles the ready event.
-func (s *Session) onReady(r *Ready) {
+func (s *Socket) onReady(r *Ready) {
 	s.Lock()
 	// Store the SessionID within the Session struct.
 	s.sessionID = r.SessionID

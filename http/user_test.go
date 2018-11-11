@@ -97,25 +97,3 @@ func TestUserGuilds(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 }
-
-func TestUserSettings(t *testing.T) {
-	if dg == nil {
-		t.Skip("Cannot TestUserSettings, dg not set.")
-	}
-
-	_, err := dg.UserSettings()
-	if err != nil {
-		t.Errorf(err.Error())
-	}
-}
-
-func TestUserUpdateStatus(t *testing.T) {
-	if dg == nil {
-		t.Skip("Cannot TestUserSettings, dg not set.")
-	}
-
-	_, err := dg.UserUpdateStatus(StatusDoNotDisturb)
-	if err != nil {
-		t.Errorf(err.Error())
-	}
-}

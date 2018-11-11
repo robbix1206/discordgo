@@ -9,7 +9,7 @@ import "strings"
 // Gateway returns the websocket Gateway address
 func (s *Session) Gateway() (gateway string, err error) {
 
-	response, err := s.RequestWithBucketID("GET", EndpointGateway, nil, EndpointGateway)
+	response, err := s.requestWithBucketID("GET", EndpointGateway, nil, EndpointGateway)
 	if err != nil {
 		return
 	}
@@ -37,7 +37,7 @@ func (s *Session) Gateway() (gateway string, err error) {
 // GatewayBot returns the websocket Gateway address and the recommended number of shards
 func (s *Session) GatewayBot() (st *GatewayBotResponse, err error) {
 
-	response, err := s.RequestWithBucketID("GET", EndpointGatewayBot, nil, EndpointGatewayBot)
+	response, err := s.requestWithBucketID("GET", EndpointGatewayBot, nil, EndpointGatewayBot)
 	if err != nil {
 		return
 	}

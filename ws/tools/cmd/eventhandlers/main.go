@@ -33,7 +33,7 @@ const ({{range .}}
 )
 {{range .}}
 // {{privateName .}}EventHandler is an event handler for {{.}} events.
-type {{privateName .}}EventHandler func(*Session, *{{.}})
+type {{privateName .}}EventHandler func(*Socket, *{{.}})
 
 // Type returns the event type for {{.}} events.
 func (eh {{privateName .}}EventHandler) Type() string {
@@ -45,7 +45,7 @@ func (eh {{privateName .}}EventHandler) New() interface{} {
   return &{{.}}{}
 }{{end}}
 // Handle is the handler for {{.}} events.
-func (eh {{privateName .}}EventHandler) Handle(s *Session, i interface{}) {
+func (eh {{privateName .}}EventHandler) Handle(s *Socket, i interface{}) {
   if t, ok := i.(*{{.}}); ok {
     eh(s, t)
   }
@@ -54,9 +54,9 @@ func (eh {{privateName .}}EventHandler) Handle(s *Session, i interface{}) {
 {{end}}
 func handlerForInterface(handler interface{}) EventHandler {
   switch v := handler.(type) {
-  case func(*Session, interface{}):
+  case func(*Socket, interface{}):
     return interfaceEventHandler(v){{range .}}
-  case func(*Session, *{{.}}):
+  case func(*Socket, *{{.}}):
     return {{privateName .}}EventHandler(v){{end}}
   }
 

@@ -2,7 +2,6 @@ package http
 
 import "github.com/robbix1206/discordgo/discord"
 
-type User = discord.User
 type VoiceRegion = discord.VoiceRegion
 type GatewayBotResponse = discord.GatewayBotResponse
 type Webhook = discord.Webhook
@@ -19,5 +18,4 @@ type Emoji = discord.Emoji
 type Role = discord.Role
 type GuildBan = discord.GuildBan
 type VerificationLevel = discord.VerificationLevel
-type Integration = discord.Integration
 type UserConnection = discord.UserConnection

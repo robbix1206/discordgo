@@ -6,6 +6,8 @@ import (
 	"image"
 	"net/url"
 	"strconv"
+
+	"github.com/robbix1206/discordgo/discord"
 )
 
 // A GuildParams stores all the data needed to update discord guild settings
@@ -106,7 +108,7 @@ const (
 // Guild returns a Guild structure of a specific Guild.
 // guildID   : The ID of a Guild
 func (s *Session) Guild(guildID string) (st *Guild, err error) {
-	body, err := s.RequestWithBucketID("GET", EndpointGuild(guildID), nil, EndpointGuild(guildID))
+	body, err := s.requestWithBucketID("GET", EndpointGuild(guildID), nil, EndpointGuild(guildID))
 	if err != nil {
 		return
 	}
@@ -123,7 +125,7 @@ func (s *Session) GuildCreate(name string) (st *Guild, err error) {
 		Name string `json:"name"`
 	}{name}
 
-	body, err := s.RequestWithBucketID("POST", EndpointGuildCreate, data, EndpointGuildCreate)
+	body, err := s.requestWithBucketID("POST", EndpointGuildCreate, data, EndpointGuildCreate)
 	if err != nil {
 		return
 	}
@@ -165,7 +167,7 @@ func (s *Session) GuildEdit(guildID string, g GuildParams) (st *Guild, err error
 		}
 	}
 
-	body, err := s.RequestWithBucketID("PATCH", EndpointGuild(guildID), g, EndpointGuild(guildID))
+	body, err := s.requestWithBucketID("PATCH", EndpointGuild(guildID), g, EndpointGuild(guildID))
 	if err != nil {
 		return
 	}
@@ -178,7 +180,7 @@ func (s *Session) GuildEdit(guildID string, g GuildParams) (st *Guild, err error
 // guildID   : The ID of a Guild
 func (s *Session) GuildDelete(guildID string) (st *Guild, err error) {
 
-	body, err := s.RequestWithBucketID("DELETE", EndpointGuild(guildID), nil, EndpointGuild(guildID))
+	body, err := s.requestWithBucketID("DELETE", EndpointGuild(guildID), nil, EndpointGuild(guildID))
 	if err != nil {
 		return
 	}
@@ -192,7 +194,7 @@ func (s *Session) GuildDelete(guildID string) (st *Guild, err error) {
 // guildID   : The ID of a Guild.
 func (s *Session) GuildBans(guildID string) (st []*GuildBan, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointGuildBans(guildID), nil, EndpointGuildBans(guildID))
+	body, err := s.requestWithBucketID("GET", EndpointGuildBans(guildID), nil, EndpointGuildBans(guildID))
 	if err != nil {
 		return
 	}
@@ -231,7 +233,7 @@ func (s *Session) GuildBanCreateWithReason(guildID, userID, reason string, days 
 		uri += "?" + queryParams.Encode()
 	}
 
-	_, err = s.RequestWithBucketID("PUT", uri, nil, EndpointGuildBan(guildID, ""))
+	_, err = s.requestWithBucketID("PUT", uri, nil, EndpointGuildBan(guildID, ""))
 	return
 }
 
@@ -240,7 +242,7 @@ func (s *Session) GuildBanCreateWithReason(guildID, userID, reason string, days 
 // userID    : The ID of a User
 func (s *Session) GuildBanDelete(guildID, userID string) (err error) {
 
-	_, err = s.RequestWithBucketID("DELETE", EndpointGuildBan(guildID, userID), nil, EndpointGuildBan(guildID, ""))
+	_, err = s.requestWithBucketID("DELETE", EndpointGuildBan(guildID, userID), nil, EndpointGuildBan(guildID, ""))
 	return
 }
 
@@ -266,7 +268,7 @@ func (s *Session) GuildMembers(guildID string, after string, limit int) (st []*M
 		uri += "?" + v.Encode()
 	}
 
-	body, err := s.RequestWithBucketID("GET", uri, nil, EndpointGuildMembers(guildID))
+	body, err := s.requestWithBucketID("GET", uri, nil, EndpointGuildMembers(guildID))
 	if err != nil {
 		return
 	}
@@ -280,7 +282,7 @@ func (s *Session) GuildMembers(guildID string, after string, limit int) (st []*M
 //  userID    : The ID of a User
 func (s *Session) GuildMember(guildID, userID string) (st *Member, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointGuildMember(guildID, userID), nil, EndpointGuildMember(guildID, ""))
+	body, err := s.requestWithBucketID("GET", EndpointGuildMember(guildID, userID), nil, EndpointGuildMember(guildID, ""))
 	if err != nil {
 		return
 	}
@@ -307,7 +309,7 @@ func (s *Session) GuildMemberAdd(accessToken, guildID, userID, nick string, role
 		Deaf        bool     `json:"deaf,omitempty"`
 	}{accessToken, nick, roles, mute, deaf}
 
-	_, err = s.RequestWithBucketID("PUT", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
+	_, err = s.requestWithBucketID("PUT", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
 	if err != nil {
 		return err
 	}
@@ -334,7 +336,7 @@ func (s *Session) GuildMemberDeleteWithReason(guildID, userID, reason string) (e
 		uri += "?reason=" + url.QueryEscape(reason)
 	}
 
-	_, err = s.RequestWithBucketID("DELETE", uri, nil, EndpointGuildMember(guildID, ""))
+	_, err = s.requestWithBucketID("DELETE", uri, nil, EndpointGuildMember(guildID, ""))
 	return
 }
 
@@ -348,7 +350,7 @@ func (s *Session) GuildMemberEdit(guildID, userID string, roles []string) (err e
 		Roles []string `json:"roles"`
 	}{roles}
 
-	_, err = s.RequestWithBucketID("PATCH", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
+	_, err = s.requestWithBucketID("PATCH", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
 	if err != nil {
 		return
 	}
@@ -368,7 +370,7 @@ func (s *Session) GuildMemberMove(guildID, userID, channelID string) (err error)
 		ChannelID string `json:"channel_id"`
 	}{channelID}
 
-	_, err = s.RequestWithBucketID("PATCH", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
+	_, err = s.requestWithBucketID("PATCH", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
 	if err != nil {
 		return
 	}
@@ -390,7 +392,7 @@ func (s *Session) GuildMemberNickname(guildID, userID, nickname string) (err err
 		userID += "/nick"
 	}
 
-	_, err = s.RequestWithBucketID("PATCH", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
+	_, err = s.requestWithBucketID("PATCH", EndpointGuildMember(guildID, userID), data, EndpointGuildMember(guildID, ""))
 	return
 }
 
@@ -400,7 +402,7 @@ func (s *Session) GuildMemberNickname(guildID, userID, nickname string) (err err
 //  roleID 	  : The ID of a Role to be assigned to the user.
 func (s *Session) GuildMemberRoleAdd(guildID, userID, roleID string) (err error) {
 
-	_, err = s.RequestWithBucketID("PUT", EndpointGuildMemberRole(guildID, userID, roleID), nil, EndpointGuildMemberRole(guildID, "", ""))
+	_, err = s.requestWithBucketID("PUT", EndpointGuildMemberRole(guildID, userID, roleID), nil, EndpointGuildMemberRole(guildID, "", ""))
 
 	return
 }
@@ -411,7 +413,7 @@ func (s *Session) GuildMemberRoleAdd(guildID, userID, roleID string) (err error)
 //  roleID 	  : The ID of a Role to be removed from the user.
 func (s *Session) GuildMemberRoleRemove(guildID, userID, roleID string) (err error) {
 
-	_, err = s.RequestWithBucketID("DELETE", EndpointGuildMemberRole(guildID, userID, roleID), nil, EndpointGuildMemberRole(guildID, "", ""))
+	_, err = s.requestWithBucketID("DELETE", EndpointGuildMemberRole(guildID, userID, roleID), nil, EndpointGuildMemberRole(guildID, "", ""))
 
 	return
 }
@@ -447,7 +449,7 @@ type GuildChannelCreateData struct {
 // guildID      : The ID of a Guild
 // data         : A data struct describing the new Channel, Name and Type are mandatory, other fields depending on the type
 func (s *Session) GuildChannelCreateComplex(guildID string, data GuildChannelCreateData) (st *Channel, err error) {
-	body, err := s.RequestWithBucketID("POST", EndpointGuildChannels(guildID), data, EndpointGuildChannels(guildID))
+	body, err := s.requestWithBucketID("POST", EndpointGuildChannels(guildID), data, EndpointGuildChannels(guildID))
 	if err != nil {
 		return
 	}
@@ -482,14 +484,14 @@ func (s *Session) GuildChannelsReorder(guildID string, channels []*Channel) (err
 		data[i].Position = c.Position
 	}
 
-	_, err = s.RequestWithBucketID("PATCH", EndpointGuildChannels(guildID), data, EndpointGuildChannels(guildID))
+	_, err = s.requestWithBucketID("PATCH", EndpointGuildChannels(guildID), data, EndpointGuildChannels(guildID))
 	return
 }
 
 // GuildInvites returns an array of Invite structures for the given guild
 // guildID   : The ID of a Guild.
 func (s *Session) GuildInvites(guildID string) (st []*Invite, err error) {
-	body, err := s.RequestWithBucketID("GET", EndpointGuildInvites(guildID), nil, EndpointGuildInvites(guildID))
+	body, err := s.requestWithBucketID("GET", EndpointGuildInvites(guildID), nil, EndpointGuildInvites(guildID))
 	if err != nil {
 		return
 	}
@@ -502,7 +504,7 @@ func (s *Session) GuildInvites(guildID string) (st []*Invite, err error) {
 // guildID   : The ID of a Guild.
 func (s *Session) GuildRoles(guildID string) (st []*Role, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointGuildRoles(guildID), nil, EndpointGuildRoles(guildID))
+	body, err := s.requestWithBucketID("GET", EndpointGuildRoles(guildID), nil, EndpointGuildRoles(guildID))
 	if err != nil {
 		return
 	}
@@ -516,7 +518,7 @@ func (s *Session) GuildRoles(guildID string) (st []*Role, err error) {
 // guildID: The ID of a Guild.
 func (s *Session) GuildRoleCreate(guildID string) (st *Role, err error) {
 
-	body, err := s.RequestWithBucketID("POST", EndpointGuildRoles(guildID), nil, EndpointGuildRoles(guildID))
+	body, err := s.requestWithBucketID("POST", EndpointGuildRoles(guildID), nil, EndpointGuildRoles(guildID))
 	if err != nil {
 		return
 	}
@@ -550,7 +552,7 @@ func (s *Session) GuildRoleEdit(guildID, roleID, name string, color int, hoist b
 		Mentionable bool   `json:"mentionable"` // Whether this role is mentionable
 	}{name, color, hoist, perm, mention}
 
-	body, err := s.RequestWithBucketID("PATCH", EndpointGuildRole(guildID, roleID), data, EndpointGuildRole(guildID, ""))
+	body, err := s.requestWithBucketID("PATCH", EndpointGuildRole(guildID, roleID), data, EndpointGuildRole(guildID, ""))
 	if err != nil {
 		return
 	}
@@ -565,7 +567,7 @@ func (s *Session) GuildRoleEdit(guildID, roleID, name string, color int, hoist b
 // roles     : A list of ordered roles.
 func (s *Session) GuildRoleReorder(guildID string, roles []*Role) (st []*Role, err error) {
 
-	body, err := s.RequestWithBucketID("PATCH", EndpointGuildRoles(guildID), roles, EndpointGuildRoles(guildID))
+	body, err := s.requestWithBucketID("PATCH", EndpointGuildRoles(guildID), roles, EndpointGuildRoles(guildID))
 	if err != nil {
 		return
 	}
@@ -580,7 +582,7 @@ func (s *Session) GuildRoleReorder(guildID string, roles []*Role) (st []*Role, e
 // roleID    : The ID of a Role.
 func (s *Session) GuildRoleDelete(guildID, roleID string) (err error) {
 
-	_, err = s.RequestWithBucketID("DELETE", EndpointGuildRole(guildID, roleID), nil, EndpointGuildRole(guildID, ""))
+	_, err = s.requestWithBucketID("DELETE", EndpointGuildRole(guildID, roleID), nil, EndpointGuildRole(guildID, ""))
 
 	return
 }
@@ -602,7 +604,7 @@ func (s *Session) GuildPruneCount(guildID string, days uint32) (count uint32, er
 	}{}
 
 	uri := EndpointGuildPrune(guildID) + "?days=" + strconv.FormatUint(uint64(days), 10)
-	body, err := s.RequestWithBucketID("GET", uri, nil, EndpointGuildPrune(guildID))
+	body, err := s.requestWithBucketID("GET", uri, nil, EndpointGuildPrune(guildID))
 	if err != nil {
 		return
 	}
@@ -638,7 +640,7 @@ func (s *Session) GuildPrune(guildID string, days uint32) (count uint32, err err
 		Pruned uint32 `json:"pruned"`
 	}{}
 
-	body, err := s.RequestWithBucketID("POST", EndpointGuildPrune(guildID), data, EndpointGuildPrune(guildID))
+	body, err := s.requestWithBucketID("POST", EndpointGuildPrune(guildID), data, EndpointGuildPrune(guildID))
 	if err != nil {
 		return
 	}
@@ -655,9 +657,9 @@ func (s *Session) GuildPrune(guildID string, days uint32) (count uint32, err err
 
 // GuildIntegrations returns an array of Integrations for a guild.
 // guildID   : The ID of a Guild.
-func (s *Session) GuildIntegrations(guildID string) (st []*Integration, err error) {
+func (s *Session) GuildIntegrations(guildID string) (st []*discord.Integration, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointGuildIntegrations(guildID), nil, EndpointGuildIntegrations(guildID))
+	body, err := s.requestWithBucketID("GET", EndpointGuildIntegrations(guildID), nil, EndpointGuildIntegrations(guildID))
 	if err != nil {
 		return
 	}
@@ -678,7 +680,7 @@ func (s *Session) GuildIntegrationCreate(guildID, integrationType, integrationID
 		ID   string `json:"id"`
 	}{integrationType, integrationID}
 
-	_, err = s.RequestWithBucketID("POST", EndpointGuildIntegrations(guildID), data, EndpointGuildIntegrations(guildID))
+	_, err = s.requestWithBucketID("POST", EndpointGuildIntegrations(guildID), data, EndpointGuildIntegrations(guildID))
 	return
 }
 
@@ -697,7 +699,7 @@ func (s *Session) GuildIntegrationEdit(guildID, integrationID string, expireBeha
 		EnableEmoticons   bool `json:"enable_emoticons"`
 	}{expireBehavior, expireGracePeriod, enableEmoticons}
 
-	_, err = s.RequestWithBucketID("PATCH", EndpointGuildIntegration(guildID, integrationID), data, EndpointGuildIntegration(guildID, ""))
+	_, err = s.requestWithBucketID("PATCH", EndpointGuildIntegration(guildID, integrationID), data, EndpointGuildIntegration(guildID, ""))
 	return
 }
 
@@ -706,7 +708,7 @@ func (s *Session) GuildIntegrationEdit(guildID, integrationID string, expireBeha
 // integrationID    : The ID of an integration.
 func (s *Session) GuildIntegrationDelete(guildID, integrationID string) (err error) {
 
-	_, err = s.RequestWithBucketID("DELETE", EndpointGuildIntegration(guildID, integrationID), nil, EndpointGuildIntegration(guildID, ""))
+	_, err = s.requestWithBucketID("DELETE", EndpointGuildIntegration(guildID, integrationID), nil, EndpointGuildIntegration(guildID, ""))
 	return
 }
 
@@ -715,7 +717,7 @@ func (s *Session) GuildIntegrationDelete(guildID, integrationID string) (err err
 // integrationID    : The ID of an integration.
 func (s *Session) GuildIntegrationSync(guildID, integrationID string) (err error) {
 
-	_, err = s.RequestWithBucketID("POST", EndpointGuildIntegrationSync(guildID, integrationID), nil, EndpointGuildIntegration(guildID, ""))
+	_, err = s.requestWithBucketID("POST", EndpointGuildIntegrationSync(guildID, integrationID), nil, EndpointGuildIntegration(guildID, ""))
 	return
 }
 
@@ -732,7 +734,7 @@ func (s *Session) GuildIcon(guildID string) (img image.Image, err error) {
 		return
 	}
 
-	body, err := s.RequestWithBucketID("GET", EndpointGuildIcon(guildID, g.Icon), nil, EndpointGuildIcon(guildID, ""))
+	body, err := s.requestWithBucketID("GET", EndpointGuildIcon(guildID, g.Icon), nil, EndpointGuildIcon(guildID, ""))
 	if err != nil {
 		return
 	}
@@ -754,7 +756,7 @@ func (s *Session) GuildSplash(guildID string) (img image.Image, err error) {
 		return
 	}
 
-	body, err := s.RequestWithBucketID("GET", EndpointGuildSplash(guildID, g.Splash), nil, EndpointGuildSplash(guildID, ""))
+	body, err := s.requestWithBucketID("GET", EndpointGuildSplash(guildID, g.Splash), nil, EndpointGuildSplash(guildID, ""))
 	if err != nil {
 		return
 	}
@@ -767,7 +769,7 @@ func (s *Session) GuildSplash(guildID string) (img image.Image, err error) {
 // guildID   : The ID of a Guild.
 func (s *Session) GuildEmbed(guildID string) (st *GuildEmbed, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointGuildEmbed(guildID), nil, EndpointGuildEmbed(guildID))
+	body, err := s.requestWithBucketID("GET", EndpointGuildEmbed(guildID), nil, EndpointGuildEmbed(guildID))
 	if err != nil {
 		return
 	}
@@ -782,7 +784,7 @@ func (s *Session) GuildEmbedEdit(guildID string, enabled bool, channelID string)
 
 	data := GuildEmbed{enabled, channelID}
 
-	_, err = s.RequestWithBucketID("PATCH", EndpointGuildEmbed(guildID), data, EndpointGuildEmbed(guildID))
+	_, err = s.requestWithBucketID("PATCH", EndpointGuildEmbed(guildID), data, EndpointGuildEmbed(guildID))
 	return
 }
 
@@ -813,7 +815,7 @@ func (s *Session) GuildAuditLog(guildID, userID, beforeID string, actionType, li
 		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
 	}
 
-	body, err := s.RequestWithBucketID("GET", uri, nil, EndpointGuildAuditLogs(guildID))
+	body, err := s.requestWithBucketID("GET", uri, nil, EndpointGuildAuditLogs(guildID))
 	if err != nil {
 		return
 	}
@@ -835,7 +837,7 @@ func (s *Session) GuildEmojiCreate(guildID, name, image string, roles []string) 
 		Roles []string `json:"roles,omitempty"`
 	}{name, image, roles}
 
-	body, err := s.RequestWithBucketID("POST", EndpointGuildEmojis(guildID), data, EndpointGuildEmojis(guildID))
+	body, err := s.requestWithBucketID("POST", EndpointGuildEmojis(guildID), data, EndpointGuildEmojis(guildID))
 	if err != nil {
 		return
 	}
@@ -856,7 +858,7 @@ func (s *Session) GuildEmojiEdit(guildID, emojiID, name string, roles []string) 
 		Roles []string `json:"roles,omitempty"`
 	}{name, roles}
 
-	body, err := s.RequestWithBucketID("PATCH", EndpointGuildEmoji(guildID, emojiID), data, EndpointGuildEmojis(guildID))
+	body, err := s.requestWithBucketID("PATCH", EndpointGuildEmoji(guildID, emojiID), data, EndpointGuildEmojis(guildID))
 	if err != nil {
 		return
 	}
@@ -870,6 +872,6 @@ func (s *Session) GuildEmojiEdit(guildID, emojiID, name string, roles []string) 
 // emojiID : The ID of an Emoji.
 func (s *Session) GuildEmojiDelete(guildID, emojiID string) (err error) {
 
-	_, err = s.RequestWithBucketID("DELETE", EndpointGuildEmoji(guildID, emojiID), nil, EndpointGuildEmojis(guildID))
+	_, err = s.requestWithBucketID("DELETE", EndpointGuildEmoji(guildID, emojiID), nil, EndpointGuildEmojis(guildID))
 	return
 }

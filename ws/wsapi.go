@@ -17,7 +17,7 @@ import (
 )
 
 // HeartbeatLatency returns the latency between heartbeat acknowledgement and heartbeat send.
-func (s *Session) HeartbeatLatency() time.Duration {
+func (s *Socket) HeartbeatLatency() time.Duration {
 	s.Lock()
 	defer s.Unlock()
 	return s.latency
@@ -48,7 +48,7 @@ func newUpdateStatusData(idle int, gameType ActivityType, game, url string) *Sta
 // If idle>0 then set status to idle.
 // If game!="" then set game.
 // if otherwise, set status to active, and no game.
-func (s *Session) UpdateStatus(idle int, game string) (err error) {
+func (s *Socket) UpdateStatus(idle int, game string) (err error) {
 	return s.UpdateStatusComplex(*newUpdateStatusData(idle, ActivityTypeGame, game, ""))
 }
 
@@ -57,7 +57,7 @@ func (s *Session) UpdateStatus(idle int, game string) (err error) {
 // If game!="" then set game.
 // If game!="" and url!="" then set the status type to streaming with the URL set.
 // if otherwise, set status to active, and no game.
-func (s *Session) UpdateStreamingStatus(idle int, game string, url string) (err error) {
+func (s *Socket) UpdateStreamingStatus(idle int, game string, url string) (err error) {
 	gameType := ActivityTypeGame
 	if url != "" {
 		gameType = ActivityTypeStreaming
@@ -68,12 +68,12 @@ func (s *Session) UpdateStreamingStatus(idle int, game string, url string) (err 
 // UpdateListeningStatus is used to set the user to "Listening to..."
 // If game!="" then set to what user is listening to
 // Else, set user to active and no game.
-func (s *Session) UpdateListeningStatus(game string) (err error) {
+func (s *Socket) UpdateListeningStatus(game string) (err error) {
 	return s.UpdateStatusComplex(*newUpdateStatusData(0, ActivityTypeListening, game, ""))
 }
 
 // UpdateStatusComplex allows for sending the raw status update data untouched by discordgo.
-func (s *Session) UpdateStatusComplex(usd StatusUpdateData) (err error) {
+func (s *Socket) UpdateStatusComplex(usd StatusUpdateData) (err error) {
 	s.RLock()
 	defer s.RUnlock()
 	if s.wsConn == nil {
@@ -92,7 +92,7 @@ func (s *Session) UpdateStatusComplex(usd StatusUpdateData) (err error) {
 // guildID  : The ID of the guild to request members of
 // query    : String that username starts with, leave empty to return all members
 // limit    : Max number of items to return, or 0 to request all members matched
-func (s *Session) RequestGuildMembers(guildID, query string, limit int) (err error) {
+func (s *Socket) RequestGuildMembers(guildID, query string, limit int) (err error) {
 	s.log(logging.LogInformational, "called")
 
 	s.RLock()
@@ -122,7 +122,7 @@ func (s *Session) RequestGuildMembers(guildID, query string, limit int) (err err
 //    cID     : Channel ID of the channel to join.
 //    mute    : If true, you will be set to muted upon joining.
 //    deaf    : If true, you will be set to deafened upon joining.
-func (s *Session) ChannelVoiceJoinManual(gID, cID string, mute, deaf bool) (err error) {
+func (s *Socket) ChannelVoiceJoinManual(gID, cID string, mute, deaf bool) (err error) {
 	s.log(logging.LogInformational, "called")
 
 	s.RLock()

@@ -2,7 +2,6 @@ package discord
 
 // A Guild holds all data related to a specific Discord Guild. Guilds are also
 // sometimes referred to as Servers in the Discord client.
-
 type Guild struct {
 	// The ID of the guild.
 	ID string `json:"id"`

@@ -8,7 +8,8 @@ import (
 	"github.com/robbix1206/discordgo/logging"
 )
 
-type Session struct {
+// Socket represent a Websocket that connect to discord
+type Socket struct {
 	sync.RWMutex
 
 	// Authentication token for this session
@@ -67,8 +68,8 @@ type Session struct {
 	getGateway func() (string, error)
 }
 
-func New(token string) *Session {
-	return &Session{
+func New(token string) *Socket {
+	return &Socket{
 		Compress:               true,
 		ShouldReconnectOnError: true,
 		ShardID:                0,
@@ -76,10 +77,11 @@ func New(token string) *Session {
 	}
 }
 
-func (s *Session) GetLogLevel() int {
+// GetLogLevel return the current log level of Socket
+func (s *Socket) GetLogLevel() int {
 	return s.LogLevel
 }
 
-func (s *Session) log(msgL int, format string, a ...interface{}) {
+func (s *Socket) log(msgL int, format string, a ...interface{}) {
 	logging.Log(s, msgL, format, a...)
 }

@@ -4,10 +4,12 @@ import (
 	"github.com/robbix1206/discordgo/http/internal"
 )
 
+// Session contain the necessery to make HTTP Request to Discord
 type Session struct {
 	internal *internal.Client
 }
 
+// New create a Session based on the given token and return it
 func New(token string) *Session {
 	return &Session{
 		internal: internal.New(token),
@@ -18,7 +20,7 @@ func unmarshal(data []byte, v interface{}) error {
 	return internal.Unmarshal(data, v)
 }
 
-func (s *Session) RequestWithBucketID(method, urlStr string, data interface{}, bucketID string) (response []byte, err error) {
+func (s *Session) requestWithBucketID(method, urlStr string, data interface{}, bucketID string) (response []byte, err error) {
 	return s.internal.RequestWithBucketID(method, urlStr, data, bucketID)
 }
 

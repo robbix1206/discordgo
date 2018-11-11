@@ -5,13 +5,15 @@ import (
 	"image"
 	"net/url"
 	"strconv"
+
+	"github.com/robbix1206/discordgo/discord"
 )
 
 // User returns the user details of the given userID
 // userID    : A user ID or "@me" which is a shortcut of current user ID
 func (s *Session) User(userID string) (st *User, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointUser(userID), nil, EndpointUsers)
+	body, err := s.requestWithBucketID("GET", EndpointUser(userID), nil, EndpointUsers)
 	if err != nil {
 		return
 	}
@@ -21,7 +23,7 @@ func (s *Session) User(userID string) (st *User, err error) {
 }
 
 // UserUpdate updates a users settings.
-func (s *Session) UserUpdate(username, avatar string) (st *User, err error) {
+func (s *Session) UserUpdate(username, avatar string) (st *discord.User, err error) {
 
 	// NOTE: Avatar must be either the hash/id of existing Avatar or
 	// data:image/png;base64,BASE64_STRING_OF_NEW_AVATAR_PNG
@@ -33,7 +35,7 @@ func (s *Session) UserUpdate(username, avatar string) (st *User, err error) {
 		Avatar   string `json:"avatar,omitempty"`
 	}{username, avatar}
 
-	body, err := s.RequestWithBucketID("PATCH", EndpointUser("@me"), data, EndpointUsers)
+	body, err := s.requestWithBucketID("PATCH", EndpointUser("@me"), data, EndpointUsers)
 	if err != nil {
 		return
 	}
@@ -67,7 +69,7 @@ func (s *Session) UserGuilds(limit int, beforeID, afterID string) (st []*Guild, 
 		uri += "?" + v.Encode()
 	}
 
-	body, err := s.RequestWithBucketID("GET", uri, nil, EndpointUserGuilds(""))
+	body, err := s.requestWithBucketID("GET", uri, nil, EndpointUserGuilds(""))
 	if err != nil {
 		return
 	}
@@ -79,7 +81,7 @@ func (s *Session) UserGuilds(limit int, beforeID, afterID string) (st []*Guild, 
 // GuildLeave leaves a Guild.
 // guildID   : The ID of a Guild
 func (s *Session) GuildLeave(guildID string) (err error) {
-	_, err = s.RequestWithBucketID("DELETE", EndpointUserGuild("@me", guildID), nil, EndpointUserGuild("", guildID))
+	_, err = s.requestWithBucketID("DELETE", EndpointUserGuild("@me", guildID), nil, EndpointUserGuild("", guildID))
 	return
 }
 
@@ -87,7 +89,7 @@ func (s *Session) GuildLeave(guildID string) (err error) {
 // channels.
 func (s *Session) UserChannels() (st []*Channel, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointUserChannels("@me"), nil, EndpointUserChannels(""))
+	body, err := s.requestWithBucketID("GET", EndpointUserChannels("@me"), nil, EndpointUserChannels(""))
 	if err != nil {
 		return
 	}
@@ -103,7 +105,7 @@ func (s *Session) UserChannelCreate(recipientID string) (st *Channel, err error)
 		RecipientID string `json:"recipient_id"`
 	}{recipientID}
 
-	body, err := s.RequestWithBucketID("POST", EndpointUserChannels("@me"), data, EndpointUserChannels(""))
+	body, err := s.requestWithBucketID("POST", EndpointUserChannels("@me"), data, EndpointUserChannels(""))
 	if err != nil {
 		return
 	}
@@ -114,7 +116,7 @@ func (s *Session) UserChannelCreate(recipientID string) (st *Channel, err error)
 
 // UserConnections returns the user's connections
 func (s *Session) UserConnections() (conn []*UserConnection, err error) {
-	response, err := s.RequestWithBucketID("GET", EndpointUserConnections("@me"), nil, EndpointUserConnections("@me"))
+	response, err := s.requestWithBucketID("GET", EndpointUserConnections("@me"), nil, EndpointUserConnections("@me"))
 	if err != nil {
 		return nil, err
 	}
@@ -133,8 +135,8 @@ func (s *Session) UserConnections() (conn []*UserConnection, err error) {
 
 // UserAvatarDecode returns an image.Image of a user's Avatar
 // user : The user which avatar should be retrieved
-func (s *Session) UserAvatarDecode(u *User) (img image.Image, err error) {
-	body, err := s.RequestWithBucketID("GET", EndpointUserAvatar(u.ID, u.Avatar), nil, EndpointUserAvatar("", ""))
+func (s *Session) UserAvatarDecode(u *discord.User) (img image.Image, err error) {
+	body, err := s.requestWithBucketID("GET", EndpointUserAvatar(u.ID, u.Avatar), nil, EndpointUserAvatar("", ""))
 	if err != nil {
 		return
 	}

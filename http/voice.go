@@ -1,13 +1,9 @@
 package http
 
-// ------------------------------------------------------------------------------------------------
-// Functions specific to Discord Voice
-// ------------------------------------------------------------------------------------------------
-
 // VoiceRegions returns the voice server regions
 func (s *Session) VoiceRegions() (st []*VoiceRegion, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointVoiceRegions, nil, EndpointVoiceRegions)
+	body, err := s.requestWithBucketID("GET", EndpointVoiceRegions, nil, EndpointVoiceRegions)
 	if err != nil {
 		return
 	}

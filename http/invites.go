@@ -8,7 +8,7 @@ package http
 // inviteID : The invite code
 func (s *Session) Invite(inviteID string) (st *Invite, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointInvite(inviteID), nil, EndpointInvite(""))
+	body, err := s.requestWithBucketID("GET", EndpointInvite(inviteID), nil, EndpointInvite(""))
 	if err != nil {
 		return
 	}
@@ -21,7 +21,7 @@ func (s *Session) Invite(inviteID string) (st *Invite, err error) {
 // inviteID : The invite code
 func (s *Session) InviteWithCounts(inviteID string) (st *Invite, err error) {
 
-	body, err := s.RequestWithBucketID("GET", EndpointInvite(inviteID)+"?with_counts=true", nil, EndpointInvite(""))
+	body, err := s.requestWithBucketID("GET", EndpointInvite(inviteID)+"?with_counts=true", nil, EndpointInvite(""))
 	if err != nil {
 		return
 	}
@@ -34,7 +34,7 @@ func (s *Session) InviteWithCounts(inviteID string) (st *Invite, err error) {
 // inviteID   : the code of an invite
 func (s *Session) InviteDelete(inviteID string) (st *Invite, err error) {
 
-	body, err := s.RequestWithBucketID("DELETE", EndpointInvite(inviteID), nil, EndpointInvite(""))
+	body, err := s.requestWithBucketID("DELETE", EndpointInvite(inviteID), nil, EndpointInvite(""))
 	if err != nil {
 		return
 	}
@@ -47,7 +47,7 @@ func (s *Session) InviteDelete(inviteID string) (st *Invite, err error) {
 // inviteID : The invite code
 func (s *Session) InviteAccept(inviteID string) (st *Invite, err error) {
 
-	body, err := s.RequestWithBucketID("POST", EndpointInvite(inviteID), nil, EndpointInvite(""))
+	body, err := s.requestWithBucketID("POST", EndpointInvite(inviteID), nil, EndpointInvite(""))
 	if err != nil {
 		return
 	}
